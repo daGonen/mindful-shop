@@ -1,0 +1,550 @@
+/* General Styling for Banner */
+.dCS_banner-static {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+.dCS_banner-static img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.dCS_banner-container{
+  /* position: relative; */
+  /* width: 100vw; */
+  height: auto;
+}
+
+.dCS_banner {
+  width: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.dCS_slider-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden; /* Prevent scroll bar */
+}
+
+.dCS_slider-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.dCS_slider {
+  display: flex;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  overflow: hidden;
+}
+
+.dCS_slider__wrapper {
+  display: flex;
+  position: absolute;
+  top: 0;
+  /* width: 100%;
+  height: 100%; */
+  flex-wrap: nowrap;
+  /* overflow: hidden; */
+}
+
+.dCS_slider__slide {
+  flex: 0 0 100%;
+  scroll-snap-align: center;
+  position: relative; /* Added for absolute positioning of button */
+  /* display: flex; */
+  /* align-items: center; */
+  /* justify-content: center; */
+}
+
+.dCS_slider__slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Purchase Button Styles */
+.dCS_purchase-button-container {
+  position: absolute;
+  bottom: 60px; /* Position above the dots */
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  width: auto;
+  text-align: center;
+}
+
+.dCS_purchase-button {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #ffffff;
+  color: #000000;
+  text-decoration: none;
+  border-radius: 4px;
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+.dCS_purchase-button:hover {
+  background-color: #f0f0f0;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.dCS_slider__controls {
+  position: absolute;
+  bottom: 20px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  z-index: 10;
+  padding-right: 10px;
+  padding-left: 10px;
+}
+
+.dCS_slider-button {
+  background: rgba(0, 0, 0, 0.3);
+  border: none;
+  color: white;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+/* Restore arrow rotation */
+.dCS_slider-button--prev .svg-wrapper {
+  transform: rotate(90deg);
+}
+
+.dCS_slider-button--next .svg-wrapper {
+  transform: rotate(-90deg);
+}
+
+.dCS_slider-dots {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+  flex-shrink: 0;
+  flex-wrap: nowrap;
+}
+
+.dCS_slider-dot {
+  width: 15px;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  background: transparent;
+  border: 2px solid rgba(255, 255, 255, 0.75);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.dCS_slider-dot.active {
+  background-color: rgba(206, 200, 194, 0.9);
+  border-color: white;
+}
+
+/* Desktop buttons container */
+.dCS_desktop-buttons-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none; /* This allows clicks to pass through to the container */
+}
+
+/* Desktop button positioning classes */
+.dCS_desktop-purchase-button-container {
+  position: absolute;
+  z-index: 20;
+  pointer-events: auto; /* Re-enable pointer events for buttons */
+}
+
+/* Position variations */
+.position-left-bottom {
+  left: 8%;
+  bottom: 8%;
+}
+
+.position-left-top {
+  left: 30%;
+  top: 8%;
+}
+
+.position-right-bottom {
+  right: 30%;
+  bottom: 8%;
+}
+
+.position-right-top {
+  right: 10%;
+  top: 8%;
+}
+
+/* Desktop button styling */
+@media screen and (min-width: 750px) {
+  .dCS_purchase-button.desktop-button {
+    background-color: transparent;
+    color: #ffffff;
+    border: 2px solid #ffffff;
+    padding: 18px 36px;
+    font-size: 16px;
+    font-weight: bold;
+    text-transform: uppercase;
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    z-index: 1;
+    /* Remove outline when clicked */
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Common hover effect - keeps outlined style but changes colors */
+  .dCS_purchase-button.desktop-button:hover {
+    background-color: rgba(255, 255, 255, 0.9); /* almost-opaque white */
+    color: #222;                                /* dark text for contrast */
+    border-color: #222;                         /* matching border */
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+
+  /* Button click wipe effect base styles */
+  .dCS_purchase-button.desktop-button::before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    transition: all 0.4s cubic-bezier(0.42, 0, 0.58, 1);
+  }
+
+  /* Theme-specific button styles - using position classes instead of theme classes */
+  /* Button 1 (Left Bottom) - Earth theme */
+  .position-left-bottom .dCS_purchase-button.desktop-button:hover {
+    color: #795548;
+    border: 2px solid #795548;
+  }
+
+  .position-left-bottom .dCS_purchase-button.desktop-button::before {
+    background: #795548;
+    width: 120%;
+    height: 0;
+    top: 50%;
+    left: -10%;
+    transform: translateY(-50%) rotate(-10deg);
+  }
+
+  .position-left-bottom .dCS_purchase-button.desktop-button:active::before {
+    height: 400%;
+    transition: all 0.3s ease-out;
+  }
+
+  .position-left-bottom .dCS_purchase-button.desktop-button:active {
+    color: #ffffff;
+    border-color: #795548;
+  }
+
+  /* Button 2 (Left Top) - Fire theme */
+  .position-left-top .dCS_purchase-button.desktop-button:hover {
+    color: #ff5722;
+    border: 2px solid #ff5722;
+  }
+
+  .position-left-top .dCS_purchase-button.desktop-button::before {
+    background: #ff5722;
+    width: 100%;
+    height: 0;
+    bottom: 0;
+    left: 0;
+    top: auto;
+  }
+
+  .position-left-top .dCS_purchase-button.desktop-button:active::before {
+    height: 100%;
+    transition: all 0.25s ease-out;
+  }
+
+  .position-left-top .dCS_purchase-button.desktop-button:active {
+    color: #ffffff;
+    border-color: #ff5722;
+  }
+
+  /* Button 3 (Right Bottom) - Water theme */
+  .position-right-bottom .dCS_purchase-button.desktop-button:hover {
+    color: #03a9f4;
+    border: 2px solid #03a9f4;
+  }
+
+  .position-right-bottom .dCS_purchase-button.desktop-button::before {
+    background: #03a9f4;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0;
+  }
+
+  .position-right-bottom .dCS_purchase-button.desktop-button:active::before {
+    transform: translate(-50%, -50%) scale(10);
+    opacity: 1;
+    transition: all 0.25s ease-out;
+  }
+
+  .position-right-bottom .dCS_purchase-button.desktop-button:active {
+    color: #ffffff;
+    border-color: #03a9f4;
+  }
+
+  /* Button 4 (Right Top) - Forest theme */
+  .position-right-top .dCS_purchase-button.desktop-button:hover {
+    color: #4caf50;
+    border: 2px solid #4caf50;
+  }
+
+  .position-right-top .dCS_purchase-button.desktop-button::before {
+    background: #4caf50;
+    width: 0;
+    height: 100%;
+    top: 0;
+    left: 0;
+  }
+
+  .position-right-top .dCS_purchase-button.desktop-button:active::before {
+    width: 100%;
+    transition: all 0.25s ease-out;
+  }
+
+  .position-right-top .dCS_purchase-button.desktop-button:active {
+    color: #ffffff;
+    border-color: #4caf50;
+  }
+
+  /* Ensure text stays visible during wipe animation */
+  .dCS_purchase-button.desktop-button:active {
+    color: #ffffff !important;
+    transform: scale(0.98);
+    transition: all 0.3s ease;
+  }
+}
+
+@media screen and (max-width: 749px) {
+
+  .dCS_banner-container,
+  .dCS_banner,
+  .dCS_slider-wrapper,
+  .dCS_slider-inner,
+  .dCS_slider,
+  .dCS_slider__wrapper,
+  .dCS_slider__slide,
+  .dCS_slider__slide img {
+    flex: 0 0 100%;
+    /* padding:0;
+    margin:0; */
+    width: 100%;
+    height: 80vh;
+  }
+  
+  /* Ensure the purchase button is properly visible on mobile */
+  .dCS_purchase-button-container {
+    bottom: 70px; /* Adjust position for mobile */
+  }
+  
+  .dCS_purchase-button {
+    padding: 12px 24px; /* Slightly larger touchable area for mobile */
+    font-size: 12px; /* Larger text for mobile */
+  }
+  
+  /* Hide desktop buttons on mobile */
+  .dCS_desktop-buttons-container {
+    display: none;
+  }
+}
+
+
+/* Mobile-First Button Styling with Animations */
+
+/* Base button style for mobile - white outline with white text */
+@media screen and (max-width: 749px) {
+  .dCS_purchase-button {
+    background-color: transparent;
+    color: #ffffff;
+    border: 2px solid #ffffff;
+    padding: 12px 24px;
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    z-index: 1;
+    /* Remove outline when clicked */
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Remove the default bottom border from desktop */
+  .dCS_banner-container .dCS_purchase-button {
+    border-bottom: 2px solid #ffffff;
+  }
+
+  /* Common hover effect - keeps outlined style but changes colors */
+  .dCS_purchase-button:hover {
+    background-color: transparent;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  /* Button click wipe effect base styles */
+  .dCS_purchase-button::before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    transition: all 0.4s cubic-bezier(0.42, 0, 0.58, 1);
+  }
+
+  /* Element-specific button styles */
+  /* Earth/Ground theme (first slide) */
+  .slide-earth-active .dCS_purchase-button:hover {
+    color: #795548;
+    border: 2px solid #795548;
+    border-bottom: 2px solid #795548;
+  }
+
+  /* Earth wipe animation - diagonal sweep */
+  .slide-earth-active .dCS_purchase-button::before {
+    background: #795548;
+    width: 120%;
+    height: 0;
+    top: 50%;
+    left: -10%;
+    transform: translateY(-50%) rotate(-10deg);
+  }
+
+  .slide-earth-active .dCS_purchase-button:active::before {
+    height: 400%;
+    transition: all 0.3s ease-out;
+  }
+
+  .slide-earth-active .dCS_purchase-button:active {
+    color: #ffffff;
+    border-color: #795548;
+  }
+
+  /* Fire theme (second slide) */
+  .slide-fire-active .dCS_purchase-button:hover {
+    color: #ff5722;
+    border: 2px solid #ff5722;
+    border-bottom: 2px solid #ff5722;
+  }
+
+  /* Fire wipe animation - bottom to top */
+  .slide-fire-active .dCS_purchase-button::before {
+    background: #ff5722;
+    width: 100%;
+    height: 0;
+    bottom: 0;
+    left: 0;
+    top: auto;
+  }
+
+  .slide-fire-active .dCS_purchase-button:active::before {
+    height: 100%;
+    transition: all 0.25s ease-out;
+  }
+
+  .slide-fire-active .dCS_purchase-button:active {
+    color: #ffffff;
+    border-color: #ff5722;
+  }
+
+  /* Water theme (third slide) */
+  .slide-water-active .dCS_purchase-button:hover {
+    color: #03a9f4;
+    border: 2px solid #03a9f4;
+    border-bottom: 2px solid #03a9f4;
+  }
+
+  /* Water wipe animation - center radial */
+  .slide-water-active .dCS_purchase-button::before {
+    background: #03a9f4;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0;
+  }
+
+  .slide-water-active .dCS_purchase-button:active::before {
+    transform: translate(-50%, -50%) scale(10);
+    opacity: 1;
+    transition: all 0.25s ease-out;
+  }
+
+  .slide-water-active .dCS_purchase-button:active {
+    color: #ffffff;
+    border-color: #03a9f4;
+  }
+
+  /* Forest/Tree theme (fourth slide) */
+  .slide-forest-active .dCS_purchase-button:hover {
+    color: #4caf50;
+    border: 2px solid #4caf50;
+    border-bottom: 2px solid #4caf50;
+  }
+
+  /* Forest wipe animation - left to right */
+  .slide-forest-active .dCS_purchase-button::before {
+    background: #4caf50;
+    width: 0;
+    height: 100%;
+    top: 0;
+    left: 0;
+  }
+
+  .slide-forest-active .dCS_purchase-button:active::before {
+    width: 100%;
+    transition: all 0.25s ease-out;
+  }
+
+  .slide-forest-active .dCS_purchase-button:active {
+    color: #ffffff;
+    border-color: #4caf50;
+  }
+
+  /* Ensure text stays visible during wipe animation */
+  .dCS_purchase-button:active {
+    color: #ffffff !important;
+    transform: scale(0.98);
+    transition: all 0.3s ease;
+  }
+
+  /* Override any conflicting animations from desktop version */
+  .dCS_purchase-button::after {
+    display: none;
+  }
+}

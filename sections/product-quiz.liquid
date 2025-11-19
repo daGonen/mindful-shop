@@ -1,0 +1,384 @@
+{% comment %}
+  Product Quiz Section
+  Save this as sections/product-quiz.liquid
+{% endcomment %}
+
+{{ 'product-quiz.css' | asset_url | stylesheet_tag }}
+
+<div class="quiz-container" id="quizContainer">
+  <div class="quiz-content color-{{ section.settings.color_scheme }}">
+    <!-- Quiz Questions -->
+    <div class="quiz-step active" data-step="1">
+      <h2 class="quiz-question">{{ section.settings.question_1 }}</h2>
+      <div class="quiz-options">
+        <button class="quiz-option" data-question="1" data-product="vitality">
+          {{ section.settings.q1_option_1 }}
+        </button>
+        <button class="quiz-option" data-question="1" data-product="unwind">
+          {{ section.settings.q1_option_2 }}
+        </button>
+        <button class="quiz-option" data-question="1" data-product="clarity">
+          {{ section.settings.q1_option_3 }}
+        </button>
+        <button class="quiz-option" data-question="1" data-product="immune">
+          {{ section.settings.q1_option_4 }}
+        </button>
+      </div>
+      <button class="quiz-next" data-next="1" style="display:none;">Next</button>
+    </div>
+
+    <div class="quiz-step" data-step="2">
+      <h2 class="quiz-question">{{ section.settings.question_2 }}</h2>
+      <p class="quiz-subtitle">Pick 1–3</p>
+      <div class="quiz-options">
+        <button class="quiz-option multi-select" data-question="2" data-product="vitality">
+          {{ section.settings.q2_option_1 }}
+        </button>
+        <button class="quiz-option multi-select" data-question="2" data-product="unwind">
+          {{ section.settings.q2_option_2 }}
+        </button>
+        <button class="quiz-option multi-select" data-question="2" data-product="clarity">
+          {{ section.settings.q2_option_3 }}
+        </button>
+        <button class="quiz-option multi-select" data-question="2" data-product="immune">
+          {{ section.settings.q2_option_4 }}
+        </button>
+      </div>
+      <button class="quiz-next" data-next="2" style="display:none;">Next</button>
+    </div>
+
+    <div class="quiz-step" data-step="3">
+      <h2 class="quiz-question">{{ section.settings.question_3 }}</h2>
+      <div class="quiz-options">
+        <button class="quiz-option" data-question="3" data-product="vitality">
+          {{ section.settings.q3_option_1 }}
+        </button>
+        <button class="quiz-option" data-question="3" data-product="unwind">
+          {{ section.settings.q3_option_2 }}
+        </button>
+        <button class="quiz-option" data-question="3" data-product="clarity">
+          {{ section.settings.q3_option_3 }}
+        </button>
+        <button class="quiz-option" data-question="3" data-product="immune">
+          {{ section.settings.q3_option_4 }}
+        </button>
+      </div>
+      <button class="quiz-next" data-next="3" style="display:none;">Next</button>
+    </div>
+
+    <div class="quiz-step" data-step="4">
+      <h2 class="quiz-question">{{ section.settings.question_4 }}</h2>
+      <div class="quiz-options">
+        <button class="quiz-option" data-question="4" data-product="vitality">
+          {{ section.settings.q4_option_1 }}
+        </button>
+        <button class="quiz-option" data-question="4" data-product="unwind">
+          {{ section.settings.q4_option_2 }}
+        </button>
+        <button class="quiz-option" data-question="4" data-product="clarity">
+          {{ section.settings.q4_option_3 }}
+        </button>
+        <button class="quiz-option" data-question="4" data-product="immune">
+          {{ section.settings.q4_option_4 }}
+        </button>
+      </div>
+      <button class="quiz-next" data-next="4" style="display:none;">Next</button>
+    </div>
+
+    <!-- Email Capture -->
+    <div class="quiz-step" data-step="5">
+      <div class="email-capture">
+        <h2>{{ section.settings.email_heading }}</h2>
+        <p>{{ section.settings.email_subheading }}</p>
+        <form id="emailForm" class="email-form">
+          <input 
+            type="email" 
+            id="quizEmail" 
+            placeholder="Enter your email" 
+            required
+          >
+          <button type="submit" class="email-submit">Get My 15% Off</button>
+        </form>
+        <button class="no-thanks" id="noThanks">No Thanks</button>
+      </div>
+    </div>
+
+    <!-- Results -->
+    <div class="quiz-step" data-step="6">
+      <div class="quiz-results">
+        <h2>{{ section.settings.results_heading }}</h2>
+        <p class="results-intro">{{ section.settings.results_subheading }}</p>
+        <div class="results-products" id="resultsProducts"></div>
+        <button class="add-all-to-cart" id="addAllToCart" style="display:none;">Add Both to Cart</button>
+      </div>
+    </div>
+
+    <!-- Progress Bar -->
+    <div class="quiz-progress">
+      <div class="quiz-progress-bar" id="progressBar"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  window.quizConfig = {
+    products: {
+      vitality: {
+        id: {{ section.settings.vitality_product.id | json }},
+        title: {{ section.settings.vitality_product.title | json }},
+        url: {{ section.settings.vitality_product.url | json }},
+        handle: {{ section.settings.vitality_product.handle | json }},
+        variantId: {{ section.settings.vitality_product.selected_or_first_available_variant.id | json }},
+        price: {{ section.settings.vitality_product.price | json }},
+        compareAtPrice: {{ section.settings.vitality_product.compare_at_price | json }},
+        featuredImage: {{ section.settings.vitality_product.featured_image | image_url: width: 400 | json }}
+      },
+      unwind: {
+        id: {{ section.settings.unwind_product.id | json }},
+        title: {{ section.settings.unwind_product.title | json }},
+        url: {{ section.settings.unwind_product.url | json }},
+        handle: {{ section.settings.unwind_product.handle | json }},
+        variantId: {{ section.settings.unwind_product.selected_or_first_available_variant.id | json }},
+        price: {{ section.settings.unwind_product.price | json }},
+        compareAtPrice: {{ section.settings.unwind_product.compare_at_price | json }},
+        featuredImage: {{ section.settings.unwind_product.featured_image | image_url: width: 400 | json }}
+      },
+      clarity: {
+        id: {{ section.settings.clarity_product.id | json }},
+        title: {{ section.settings.clarity_product.title | json }},
+        url: {{ section.settings.clarity_product.url | json }},
+        handle: {{ section.settings.clarity_product.handle | json }},
+        variantId: {{ section.settings.clarity_product.selected_or_first_available_variant.id | json }},
+        price: {{ section.settings.clarity_product.price | json }},
+        compareAtPrice: {{ section.settings.clarity_product.compare_at_price | json }},
+        featuredImage: {{ section.settings.clarity_product.featured_image | image_url: width: 400 | json }}
+      },
+      immune: {
+        id: {{ section.settings.immune_product.id | json }},
+        title: {{ section.settings.immune_product.title | json }},
+        url: {{ section.settings.immune_product.url | json }},
+        handle: {{ section.settings.immune_product.handle | json }},
+        variantId: {{ section.settings.immune_product.selected_or_first_available_variant.id | json }},
+        price: {{ section.settings.immune_product.price | json }},
+        compareAtPrice: {{ section.settings.immune_product.compare_at_price | json }},
+        featuredImage: {{ section.settings.immune_product.featured_image | image_url: width: 400 | json }}
+      }
+    },
+    cartRoutes: {
+      cartUrl: {{ routes.cart_url | json }}
+    }
+  };
+</script>
+
+<script src="{{ 'product-quiz.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "Product Quiz",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Question 1"
+    },
+    {
+      "type": "text",
+      "id": "question_1",
+      "label": "Question 1",
+      "default": "How are you feeling these days?"
+    },
+    {
+      "type": "text",
+      "id": "q1_option_1",
+      "label": "Option 1 (Vitality)",
+      "default": "Stress is dominating my life right now"
+    },
+    {
+      "type": "text",
+      "id": "q1_option_2",
+      "label": "Option 2 (Unwind)",
+      "default": "I feel exhausted and my rest doesn't restore me"
+    },
+    {
+      "type": "text",
+      "id": "q1_option_3",
+      "label": "Option 3 (Clarity)",
+      "default": "I feel foggy, unfocused, unmotivated, uninspired"
+    },
+    {
+      "type": "text",
+      "id": "q1_option_4",
+      "label": "Option 4 (Immune)",
+      "default": "I feel weak, fragile, in need of grounding"
+    },
+    {
+      "type": "header",
+      "content": "Question 2"
+    },
+    {
+      "type": "text",
+      "id": "question_2",
+      "label": "Question 2",
+      "default": "Which flavours are calling to you today?"
+    },
+    {
+      "type": "text",
+      "id": "q2_option_1",
+      "label": "Option 1 (Vitality)",
+      "default": "Bold berry & Spicy"
+    },
+    {
+      "type": "text",
+      "id": "q2_option_2",
+      "label": "Option 2 (Unwind)",
+      "default": "Soft & Floral"
+    },
+    {
+      "type": "text",
+      "id": "q2_option_3",
+      "label": "Option 3 (Clarity)",
+      "default": "Fresh & Herbal"
+    },
+    {
+      "type": "text",
+      "id": "q2_option_4",
+      "label": "Option 4 (Immune)",
+      "default": "Warm cinnamon & Comforting"
+    },
+    {
+      "type": "header",
+      "content": "Question 3"
+    },
+    {
+      "type": "textarea",
+      "id": "question_3",
+      "label": "Question 3",
+      "default": "Pause your logical mind. Tune in. Look within. Which element of nature do you feel most drawn to right now?"
+    },
+    {
+      "type": "text",
+      "id": "q3_option_1",
+      "label": "Option 1 (Vitality)",
+      "default": "Fire"
+    },
+    {
+      "type": "text",
+      "id": "q3_option_2",
+      "label": "Option 2 (Unwind)",
+      "default": "Water"
+    },
+    {
+      "type": "text",
+      "id": "q3_option_3",
+      "label": "Option 3 (Clarity)",
+      "default": "Forest"
+    },
+    {
+      "type": "text",
+      "id": "q3_option_4",
+      "label": "Option 4 (Immune)",
+      "default": "Mountain"
+    },
+    {
+      "type": "header",
+      "content": "Question 4"
+    },
+    {
+      "type": "textarea",
+      "id": "question_4",
+      "label": "Question 4",
+      "default": "If you could teleport right now, which scenery would bring you the most joy?"
+    },
+    {
+      "type": "text",
+      "id": "q4_option_1",
+      "label": "Option 1 (Vitality)",
+      "default": "A sunrise glow dancing over warm earth"
+    },
+    {
+      "type": "text",
+      "id": "q4_option_2",
+      "label": "Option 2 (Unwind)",
+      "default": "A calm river flow reflecting the sky"
+    },
+    {
+      "type": "text",
+      "id": "q4_option_3",
+      "label": "Option 3 (Clarity)",
+      "default": "A quiet forest breathing after rain"
+    },
+    {
+      "type": "text",
+      "id": "q4_option_4",
+      "label": "Option 4 (Immune)",
+      "default": "A mountain peak wrapped in stillness"
+    },
+    {
+      "type": "header",
+      "content": "Email Capture"
+    },
+    {
+      "type": "text",
+      "id": "email_heading",
+      "label": "Email Heading",
+      "default": "Get 15% Off Your Perfect Match"
+    },
+    {
+      "type": "textarea",
+      "id": "email_subheading",
+      "label": "Email Subheading",
+      "default": "Join our community and receive an exclusive discount code in your inbox. Plus, get wellness tips and early access to new products."
+    },
+    {
+      "type": "header",
+      "content": "Results"
+    },
+    {
+      "type": "text",
+      "id": "results_heading",
+      "label": "Results Heading",
+      "default": "Your Perfect Blend"
+    },
+    {
+      "type": "textarea",
+      "id": "results_subheading",
+      "label": "Results Subheading",
+      "default": "Based on your answers, we've selected these products just for you."
+    },
+    {
+      "type": "header",
+      "content": "Product Selection"
+    },
+    {
+      "type": "product",
+      "id": "vitality_product",
+      "label": "Vitality Product"
+    },
+    {
+      "type": "product",
+      "id": "unwind_product",
+      "label": "Unwind Product"
+    },
+    {
+      "type": "product",
+      "id": "clarity_product",
+      "label": "Clarity Product"
+    },
+    {
+      "type": "product",
+      "id": "immune_product",
+      "label": "Immune Product"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product Quiz"
+    }
+  ]
+}
+{% endschema %}

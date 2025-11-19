@@ -1,0 +1,109 @@
+{% comment %}
+  Bundle Builder Section with custom prefix (dCS_bb_)
+  Left: A 2x2 product grid.
+  Right: A bundle builder with options, an overlay for product images, and an action button.
+{% endcomment %}
+
+<div class="dCS_bb_wrapper">
+  <!-- Left Side: Product Grid -->
+  <div class="dCS_bb_left">
+    <div class="dCS_bb_product-grid">
+      {% for block in section.blocks %}
+        {% assign product = all_products[block.settings.product] %}
+        <div class="dCS_bb_product-item" data-product-id="{{ product.id }}">
+          <div class="dCS_bb_product-image">
+            <img src="{{ product.featured_image | image_url }}" alt="{{ product.title }}">
+          </div>
+          
+          <div class="dCS_bb_product-content">  <!-- New wrapper for title + quantity -->
+            <h2 class="dCS_bb_product-title">{{ product.title }}</h2>
+            <div class="quantity"> 
+              <button class="quantity__button" data-action="decrease">-</button>
+              <input type="number" class="quantity__input" value="1" min="1">
+              <button class="quantity__button" data-action="increase">+</button>
+            </div>
+          </div>
+          
+          <button class="button dCS_bb_add-to-bundle color-{{ section.settings.color_scheme }}{% if section.settings.button_style_secondary_2 %} button--secondary {% else %} button{% endif %}" 
+          data-product-title="{{ product.title }}">
+            Add
+          </button>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Right Side: Bundle Builder -->
+  <div class="dCS_bb_right" 
+       data-bundle3-url="{{ 'bundle3.png' | file_url }}"
+       data-bundle6-url="{{ 'bundle6.png' | file_url }}">
+    <div class="dCS_bb_header">
+      <h2>Build a Bundle</h2>
+      <p>Save 10% on 3-pack and 15% on 6-pack</p>
+    </div>
+    <div class="dCS_bb_options">
+      <label>
+        <input type="radio" name="dCS_bb_bundleSize" value="3" checked>
+        3 Pack – <span class="dCS_bb_original-price" style="text-decoration: line-through;">$42.00 CAD</span>
+        <span class="dCS_bb_discount-price">$37.80 CAD</span>
+      </label>
+      <label>
+        <input type="radio" name="dCS_bb_bundleSize" value="6">
+        6 Pack – <span class="dCS_bb_original-price" style="text-decoration: line-through;">$84.00 CAD</span>
+        <span class="dCS_bb_discount-price">$71.40 CAD</span>
+      </label>
+    </div>
+    <div class="dCS_bb_image-container" style="position: relative;">
+      <!-- Base image; its source updates via JS based on the bundle size -->
+      <img id="dCS_bb_base-image" src="{{ 'bundle3.png' | file_url }}" alt="Bundle Base">
+      <!-- Overlay container for product images -->
+      <div class="dCS_bb_overlay"></div>
+    </div>
+    <!-- Main Action Button -->
+    <button id="dCS_bb_action-btn" class="button button--primary dCS_bb_action-btn color-{{ section.settings.color_scheme }}{% if section.settings.button_style_secondary_2 %} button--secondary {% else %} button{% endif %}">
+      Add 3 Products
+    </button>
+  </div>
+</div>
+
+<!-- Include external CSS and JS files -->
+<link rel="stylesheet" href="{{ 'bundle-builder.css' | asset_url }}">
+<script src="{{ 'bundle-builder.js' | asset_url }}"></script>
+
+{% schema %}
+{
+  "name": "Bundle Builder",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color Scheme"
+    },
+    {
+      "type": "checkbox",
+      "id": "button_style_secondary_2",
+      "default": false,
+      "label": "Button Style Secondary"
+    },
+  ],
+  "blocks": [
+    {
+      "type": "product",
+      "name": "Product",
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Select Product"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Bundle Builder",
+      "category": "Custom"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,295 @@
+{% comment %}
+  Key Ingredients Section
+  
+  This section displays key ingredients from product metadata.
+  All content is dynamically pulled from the current product's metadata:
+  - Images from product.metafields.custom.key_ingredients
+  - Image captions from the image filenames
+  - Background color from product.metafields.custom.background_color
+  - Optional ingredients text from product.metafields.custom.ingredients
+  - Gradient colors from product.metafields.custom.gradientA and product.metafields.custom.gradientB
+{% endcomment %}
+
+{% assign metadata_field = section.settings.metadata_field %}
+
+{%- if product.metafields.custom[metadata_field] != blank -%}
+  {{ 'image-and-text.css' | asset_url | stylesheet_tag }}
+
+  {% assign gradientA = product.metafields.custom.gradientA | default: section.settings.gradient_color_a %}
+  {% assign gradientB = product.metafields.custom.gradientB | default: section.settings.gradient_color_b %}
+  {% assign use_gradient = section.settings.use_gradient_background %}
+
+  <div class="metadata-images-section" id="{{ section.id }}">
+    <div class="section-container">
+      {% if section.settings.heading != blank %}
+        <h2 class="section-heading">{{ section.settings.heading }}</h2>
+      {% endif %}
+      
+      <div class="metadata-images-wrapper">
+        {%- if product.metafields.custom[metadata_field].type == 'list.file_reference' -%}
+          {%- assign images = product.metafields.custom[metadata_field].value -%}
+        {%- else -%}
+          {%- assign images = product.metafields.custom[metadata_field].value | default: product.metafields.custom[metadata_field] -%}
+        {%- endif -%}
+        {%- assign bg_color = product.metafields.custom.background_color | default: section.settings.default_bg_color -%}
+        
+        {%- for image in images -%}
+          <div class="metadata-item">
+            <div class="metadata-image-wrapper" style="background-color: {{ bg_color }}; width: {{ section.settings.image_size }}px; height: {{ section.settings.image_size }}px;">
+              {%- if image.src != blank -%}
+                {% comment %} Handle both file_reference and URL formats {% endcomment %}
+                {% if image.url %}
+                  {% assign img_url = image.url %}
+                {% elsif image.src contains '//' %}
+                  {% assign img_url = image.src %}
+                {% else %}
+                  {% assign img_url = image | img_url: 'master' %}
+                {% endif %}
+                <img src="{{ img_url }}" 
+                     alt="{{ image.alt | default: 'Image' | escape }}"
+                     loading="lazy"
+                     class="inverted"
+                     width="{{ image.width | default: 100 }}"
+                     height="{{ image.height | default: 100 }}"
+                     style="width: {{ section.settings.image_content_size }}%; height: {{ section.settings.image_content_size }}%;">
+              {%- endif -%}
+            </div>
+            
+            {% comment %} Extract filename from image URL and use as caption {% endcomment %}
+            {%- if image.src != blank -%}
+              {%- assign img_url_parts = image.src | split: '/' -%}
+              {%- assign filename_with_ext = img_url_parts | last -%}
+              {%- assign filename = filename_with_ext | split: '?' | first | split: '.' | first -%}
+              
+              {% comment %} Replace hyphens and underscores with spaces {% endcomment %}
+              {%- assign formatted_name = filename | replace: '-', ' ' | replace: '_', ' ' -%}
+              
+              <div class="metadata-caption">
+                {{ formatted_name | strip }}
+              </div>
+            {%- endif -%}
+          </div>
+        {%- endfor -%}
+      </div>
+
+      {% comment %} Optional text blocks from section blocks {% endcomment %}
+      {% if section.blocks.size > 0 %}
+        <div class="metadata-text-blocks">
+          {% for block in section.blocks %}
+            <div class="metadata-text-block" {{ block.shopify_attributes }}>
+              {% if block.settings.use_metadata_text %}
+                {% if product.metafields.custom.ingredients != blank %}
+                  <div class="ingredients-text">
+                    {{ product.metafields.custom.ingredients | metafield_tag }}
+                  </div>
+                {% endif %}
+              {% else %}
+                {% if block.settings.custom_text != blank %}
+                  <div class="custom-text">
+                    {{ block.settings.custom_text }}
+                  </div>
+                {% endif %}
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <style>
+    #{{ section.id }} {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+      margin-top: {{ section.settings.margin_top }}px; 
+      margin-bottom: {{ section.settings.margin_bottom }}px;
+      {% if use_gradient %}
+        background: linear-gradient(to bottom, {{ gradientB }}, {{ gradientA }});
+      {% endif %}
+    }
+    
+    #{{ section.id }} .metadata-image-wrapper {
+      width: {{ section.settings.image_size }}px;
+      height: {{ section.settings.image_size }}px;
+    }
+    
+    #{{ section.id }} .metadata-image-wrapper img {
+      width: {{ section.settings.image_content_size }}%;
+      height: {{ section.settings.image_content_size }}%;
+    }
+    
+    @media screen and (max-width: 767px) {
+      #{{ section.id }} .metadata-image-wrapper {
+        width: {{ section.settings.image_size_mobile }}px;
+        height: {{ section.settings.image_size_mobile }}px;
+      }
+    }
+  </style>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Product Metadata Images",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Section Heading",
+      "default": "Product Images"
+    },
+    {
+      "type": "text",
+      "id": "metadata_field",
+      "label": "Metadata Field Name",
+      "default": "key_ingredients",
+      "info": "Enter the metadata field name (e.g. key_ingredients, info_icons)"
+    },
+    {
+      "type": "color",
+      "id": "default_bg_color",
+      "label": "Default background color",
+      "default": "#f5f5f5",
+      "info": "Used when product.metafields.custom.background_color is not available"
+    },
+    {
+      "type": "header",
+      "content": "Image Settings"
+    },
+    {
+      "type": "range",
+      "id": "image_size",
+      "min": 50,
+      "max": 200,
+      "step": 5,
+      "unit": "px",
+      "label": "Image Container Size",
+      "default": 100,
+      "info": "Size of the circular image container"
+    },
+    {
+      "type": "range",
+      "id": "image_size_mobile",
+      "min": 50,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "label": "Mobile Image Container Size",
+      "default": 70,
+      "info": "Size of the circular image container on mobile"
+    },
+    {
+      "type": "range",
+      "id": "image_content_size",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Image Content Size",
+      "default": 75,
+      "info": "Size of the image inside the container"
+    },
+    {
+      "type": "header",
+      "content": "Background Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "use_gradient_background",
+      "label": "Use Gradient Background",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "gradient_color_a",
+      "label": "Gradient Color A",
+      "default": "#ffffff",
+      "info": "Used when product.metafields.custom.gradientA is not available"
+    },
+    {
+      "type": "color",
+      "id": "gradient_color_b",
+      "label": "Gradient Color B",
+      "default": "#f5f5f5",
+      "info": "Used when product.metafields.custom.gradientB is not available"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding Top",
+      "default": 40,
+      "info": "Internal spacing (inside the gradient background)"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding Bottom",
+      "default": 40,
+      "info": "Internal spacing (inside the gradient background)"
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Margin Top",
+      "default": 0,
+      "info": "External spacing (outside the gradient background)"
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Margin Bottom",
+      "default": 0,
+      "info": "External spacing (outside the gradient background)"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "text",
+      "name": "Text Block",
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "use_metadata_text",
+          "label": "Use Ingredients from Metadata",
+          "default": true,
+          "info": "Use the product.metafields.custom.ingredients field"
+        },
+        {
+          "type": "richtext",
+          "id": "custom_text",
+          "label": "Custom Text",
+          "default": "<p>Add your custom text here</p>",
+          "info": "Used when not using metadata text"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Key Ingredients"
+    }
+  ],
+  "templates": ["product"]
+}
+{% endschema %}

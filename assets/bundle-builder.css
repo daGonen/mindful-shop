@@ -1,0 +1,309 @@
+/* bundle-builder.css */
+
+/* Container for the entire section */
+.dCS_bb_wrapper {
+  display: flex;
+  gap: 20px;
+  margin: 20px 0;
+}
+
+/* Left & Right columns */
+.dCS_bb_left {
+  width: 60%; /* Take more space (was 50%) */
+  margin: 0; /* Remove any extra margins */
+  display: flex;
+  justify-content: center; /* Center the grid */
+  align-items: center;
+}
+
+.dCS_bb_right {
+  padding: 0 20px; /* Reduce side padding */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  text-align: center;
+  max-width: 100%; /* Ensure it doesn't exceed viewport width */
+}
+
+/* Product grid in the left column */
+.dCS_bb_product-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  width: 90%;
+}
+
+.dCS_bb_product-item {
+  width: 100%;
+  padding: 10px;
+  text-align: center;
+}
+
+.dCS_bb_product-image img {
+  width: 100%;
+  height: auto;
+  max-height: 500px;
+  object-fit: contain;
+}
+
+/* Right side header and options */
+.dCS_bb_header {
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.dCS_bb_options {
+  display: flex;
+  flex-direction: column; /* Stack options vertically */
+  gap: 12px; /* Space between options */
+  padding: 16px;
+  border-radius: 8px;
+  margin-top: 12px;
+  white-space: nowrap;
+}
+
+.dCS_bb_options label {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Space between radio button and text */
+  background: rgba(0, 0, 0, 0.1); /* Light background */
+  padding: 10px 15px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+  white-space: nowrap; 
+  flex-wrap: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dCS_bb_action-btn {
+  width: 100%;
+  padding: 15px;
+  font-size: 18px;
+  margin-top: 15px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.dCS_bb_options input[type="radio"] {
+  appearance: none; /* Hide default radio */
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid rgba(0, 0, 0, 0.5);
+  outline: none;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.dCS_bb_options input[type="radio"]:checked {
+  background: rgba(0, 0, 0, 0.8);
+  border-color: rgba(0, 0, 0, 1);
+}
+
+/* Position the overlay on top of the bundle image */
+.dCS_bb_overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-auto-flow: row;
+  justify-content: center; /* Center the grid horizontally */
+  justify-items: center; /* Center items in their grid cells */
+  align-items: start;
+  gap: 30px;
+  pointer-events: none;
+  margin: 0 auto; /* Center the overlay */
+}
+
+/* Overlay container grid layout for 6 pack */
+.dCS_bb_overlay.grid-6 {
+  align-content: start; /* Force content to start at the top */
+  grid-auto-rows: min-content; /* Allow rows to take minimum height needed */
+}
+
+/* Ensure each product image wrapper aligns properly */
+.bundle-product-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  pointer-events: auto;
+}
+
+/* Ensure the container is positioned relative */
+.dCS_bb_image-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* width: 100%; */
+  max-width: 100%; /* Ensure container doesn't exceed parent width */
+  margin: 0 auto;
+}
+
+/* Adjust product images to be larger and more visible */
+.bundle-product-image {
+  width: auto; /* Increase size */
+  height: 175px;
+  display: block;
+}
+
+/* Remove button styling (the little "×") */
+.bundle-product-remove {
+    background-color:  rgba(var(--color-button), var(--alpha-button-background));
+    color: rgb(var(--color-button-text));
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    border-radius: 50%;
+    transition: all 0.2s ease-in-out;
+}
+
+.bundle-product-remove:hover {
+    background-color: rgba(200, 0, 0, 1);
+}
+
+.dCS_bb_original-price {
+  color: #c36161;
+  font-style: italic;
+}
+
+.dCS_bb_discount-price{
+  font-weight: bold;
+}
+
+
+
+
+.bundle-product-wrapper:first-child {
+  grid-column: 1;
+  justify-self: start;
+}
+
+.dCS_bb_overlay:not(:empty) {
+  grid-template-columns: repeat(3, 1fr) !important;
+}
+
+
+
+
+/* Mobile-specific styles */
+@media screen and (max-width: 768px) {
+    .dCS_bb_wrapper {
+        flex-direction: column; /* Stack elements vertically */
+    }
+    
+    .dCS_bb_left {
+        width: 100%;
+        order: 2; /* Move products below bundle builder */
+    }
+    
+    .dCS_bb_right {
+        width: 100%;
+        order: 1; /* Keep bundle builder at the top */
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .dCS_bb_product-grid {
+        display: flex;
+        flex-direction: column; /* Stack products vertically */
+        gap: 10px;
+    }
+    
+    .dCS_bb_product-item {
+        display: flex;
+        flex-direction: row; /* Ensure image stays on the left */
+        align-items: center;
+        padding: 10px;
+        border-top: 1px solid #919191;
+    }
+    
+    .dCS_bb_product-image {
+        flex: 0 0 200px; /* Increase image size */
+        /* margin-right: 10px; */
+    }
+    
+    .dCS_bb_product-image img {
+        width: 200px;
+        height: auto;
+    }
+    
+    .dCS_bb_product-content {
+        display: flex;
+        flex-direction: column; /* Stack title above quantity */
+        align-items: flex-start;
+        padding: 0 20px;
+    }
+    
+    .dCS_bb_product-title {
+        margin-bottom: 15px; /* Add spacing between title and quantity */
+    }
+    
+    .quantity {
+        align-self: flex-start; /* Align quantity controller below title */
+    }
+  
+}
+
+/* Desktop-specific styles */
+@media screen and (min-width: 769px) {
+    .dCS_bb_product-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .dCS_bb_product-item {
+        display: flex;
+        flex-direction: column; 
+        align-items: center;
+        text-align: center;
+    }
+  
+    .dCS_bb_product-item button {
+        display: inline-block;
+    }
+    
+    .dCS_bb_quantity-selector {
+        display: none;
+    }
+  
+    .dCS_bb_product-title {
+        order: -1; 
+    }
+ 
+    .dCS_bb_product-image {
+        order: 1;
+        width: 100%;
+        height: auto; 
+    }
+
+    .dCS_bb_add-to-bundle {
+        order: 2; /* Ensure button stays at the bottom */
+    }
+
+    .dCS_bb_right {
+        position: sticky;
+        top: 10%;
+        height: 800px;
+    }
+}

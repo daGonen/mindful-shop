@@ -1,0 +1,513 @@
+{% comment %}
+  Video Slideshow Section for Shopify
+  Place this file in sections/video-slideshow.liquid
+{% endcomment %}
+
+{{ 'video-slideshow.css' | asset_url | stylesheet_tag }}
+
+<div class="video-slideshow-section" 
+     data-section-id="{{ section.id }}"
+     data-autoplay="{{ section.settings.autoplay }}"
+     data-autoplay-speed="{{ section.settings.autoplay_speed }}"
+     data-pause-on-hover="{{ section.settings.pause_on_hover }}"
+     style="padding: {{ section.settings.padding_top }}px 0 {{ section.settings.padding_bottom }}px 0;">
+  
+  <div class="video-slideshow-container" style="max-width: {{ section.settings.section_width }}px; margin: 0 auto; padding: 0 20px;">
+    
+    {% if section.settings.title != blank %}
+      <h2 class="video-slideshow-title" 
+          style="text-align: {{ section.settings.title_alignment }}; 
+                 margin-bottom: 30px; 
+                 font-size: {{ section.settings.title_size }}px;
+                 color: {{ section.settings.title_color }};
+                 font-family: inherit;">
+        {{ section.settings.title }}
+      </h2>
+    {% endif %}
+    
+    {% if section.settings.description != blank %}
+      <div class="video-slideshow-description" 
+           style="text-align: {{ section.settings.title_alignment }}; 
+                  margin-bottom: 40px; 
+                  font-size: {{ section.settings.description_size }}px;
+                  color: {{ section.settings.description_color }};">
+        {{ section.settings.description }}
+      </div>
+    {% endif %}
+    
+    <div class="video-slideshow-wrapper-container">
+      <div class="video-slideshow-wrapper" 
+           style="gap: {{ section.settings.video_spacing }}px;"
+           data-slide-count="{{ section.blocks.size }}">
+        
+        {% for block in section.blocks %}
+          {% case block.type %}
+            {% when 'video' %}
+              <div class="video-slide" 
+                   data-block-id="{{ block.id }}"
+                   data-video-url="{{ block.settings.video_url }}"
+                   style="width: {{ section.settings.video_width }}px; 
+                          height: {{ section.settings.video_height }}px;">
+                <div class="video-thumbnail" 
+                     style="border-radius: {{ section.settings.border_radius }}px;">
+                  
+                  <video class="slideshow-video" 
+                         preload="metadata" 
+                         muted
+                         playsinline
+                         loop="{{ block.settings.loop_video }}"
+                         data-src="{{ block.settings.video_url }}">
+                    <source src="{{ block.settings.video_url }}" type="video/mp4">
+                    Your browser does not support the video tag.
+                  </video>
+                  
+                  <div class="video-overlay">
+                    <div class="play-button-overlay">
+                      <button class="play-button" 
+                              aria-label="Play video"
+                              data-video-title="{{ block.settings.video_title | escape }}">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M8 5V19L19 12L8 5Z" fill="currentColor"/>
+                        </svg>
+                      </button>
+                    </div>
+                    
+                    {% if block.settings.video_title != blank %}
+                      <div class="video-title-overlay">
+                        <h3>{{ block.settings.video_title }}</h3>
+                        {% if block.settings.video_description != blank %}
+                          <p>{{ block.settings.video_description }}</p>
+                        {% endif %}
+                      </div>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+              
+            {% when 'text' %}
+              <div class="text-slide" 
+                   data-block-id="{{ block.id }}"
+                   style="width: {{ section.settings.video_width }}px; 
+                          height: {{ section.settings.video_height }}px;">
+                <div class="text-content" 
+                     style="border-radius: {{ section.settings.border_radius }}px; 
+                            background: {{ block.settings.background_color }}; 
+                            color: {{ block.settings.text_color }};">
+                  
+                  {% if block.settings.text_title != blank %}
+                    <h3 class="text-slide-title" 
+                        style="font-size: {{ block.settings.title_size }}px;">
+                      {{ block.settings.text_title }}
+                    </h3>
+                  {% endif %}
+                  
+                  {% if block.settings.text_content != blank %}
+                    <div class="text-slide-content" 
+                         style="font-size: {{ block.settings.content_size }}px;">
+                      {{ block.settings.text_content }}
+                    </div>
+                  {% endif %}
+                  
+                  {% if block.settings.button_text != blank and block.settings.button_url != blank %}
+                    <a href="{{ block.settings.button_url }}" 
+                       class="text-slide-button" 
+                       style="background: {{ block.settings.button_color }}; 
+                              color: {{ block.settings.button_text_color }};">
+                      {{ block.settings.button_text }}
+                    </a>
+                  {% endif %}
+                </div>
+              </div>
+          {% endcase %}
+        {% endfor %}
+      </div>
+      
+      {% if section.blocks.size > 1 and section.settings.show_navigation %}
+        <button class="slideshow-nav prev-slide" 
+                aria-label="Previous slide"
+                style="color: {{ section.settings.nav_color }};">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        
+        <button class="slideshow-nav next-slide" 
+                aria-label="Next slide"
+                style="color: {{ section.settings.nav_color }};">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      {% endif %}
+      
+      {% if section.blocks.size > 1 and section.settings.show_dots %}
+        <div class="slideshow-dots">
+          <!-- Dots will be generated dynamically by JavaScript -->
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<!-- Desktop Side Panel -->
+<div class="video-side-panel" id="videoSidePanel">
+  <div class="side-panel-backdrop"></div>
+  <div class="side-panel-content">
+    <div class="side-panel-header">
+      <h3 class="side-panel-title"></h3>
+      <button class="close-panel" aria-label="Close video panel">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+    
+    <div class="side-panel-video-container">
+      <video class="side-panel-video" 
+             controls 
+             preload="metadata" 
+             playsinline>
+        <source src="" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+    </div>
+  </div>
+</div>
+
+<!-- Mobile Full Screen Video -->
+<div class="mobile-video-overlay" id="mobileVideoOverlay">
+  <div class="mobile-video-container">
+    <button class="mobile-close-btn" aria-label="Close video">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    
+    <div class="mobile-video-slideshow">
+      <div class="mobile-video-track">
+        <!-- Videos will be populated by JavaScript -->
+      </div>
+    </div>
+    
+    <div class="mobile-video-navigation">
+      <button class="mobile-nav-btn prev-video" aria-label="Previous video">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      
+      <div class="mobile-video-dots"></div>
+      
+      <button class="mobile-nav-btn next-video" aria-label="Next video">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Loading Spinner -->
+<div class="video-loading" id="videoLoading">
+  <div class="loading-spinner"></div>
+</div>
+
+<script src="{{ 'video-slideshow.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "Video Slideshow",
+  "tag": "section",
+  "class": "video-slideshow-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section Settings"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Section Title",
+      "default": "Video Slideshow"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title Color",
+      "default": "#000000"
+    },
+    {
+      "type": "select",
+      "id": "title_alignment",
+      "label": "Title Alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "label": "Title Size",
+      "min": 16,
+      "max": 48,
+      "step": 2,
+      "default": 32,
+      "unit": "px"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Section Description"
+    },
+    {
+      "type": "color",
+      "id": "description_color",
+      "label": "Description Color",
+      "default": "#666666"
+    },
+    {
+      "type": "range",
+      "id": "description_size",
+      "label": "Description Size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Layout Settings"
+    },
+    {
+      "type": "range",
+      "id": "section_width",
+      "label": "Section Max Width",
+      "min": 800,
+      "max": 1600,
+      "step": 50,
+      "default": 1200,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "video_width",
+      "label": "Video Width",
+      "min": 200,
+      "max": 600,
+      "step": 20,
+      "default": 300,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "video_height",
+      "label": "Video Height",
+      "min": 150,
+      "max": 450,
+      "step": 15,
+      "default": 195,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "video_spacing",
+      "label": "Video Spacing",
+      "min": 10,
+      "max": 50,
+      "step": 5,
+      "default": 20,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "Border Radius",
+      "min": 0,
+      "max": 30,
+      "step": 2,
+      "default": 12,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top Padding",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 40,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom Padding",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 40,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Slideshow Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "label": "Auto-play slideshow",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "autoplay_speed",
+      "label": "Auto-play Speed",
+      "min": 2,
+      "max": 10,
+      "step": 1,
+      "default": 5,
+      "unit": "s"
+    },
+    {
+      "type": "checkbox",
+      "id": "pause_on_hover",
+      "label": "Pause on hover",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_navigation",
+      "label": "Show navigation arrows",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_dots",
+      "label": "Show dot indicators",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "nav_color",
+      "label": "Navigation Color",
+      "default": "#ffffff"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "video",
+      "name": "Video",
+      "settings": [
+        {
+          "type": "url",
+          "id": "video_url",
+          "label": "Video URL",
+          "info": "Upload video to Files in your admin and paste the URL here"
+        },
+        {
+          "type": "text",
+          "id": "video_title",
+          "label": "Video Title",
+          "info": "Optional overlay title"
+        },
+        {
+          "type": "textarea",
+          "id": "video_description",
+          "label": "Video Description",
+          "info": "Optional description shown in overlay"
+        },
+        {
+          "type": "checkbox",
+          "id": "loop_video",
+          "label": "Loop video",
+          "default": false
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "name": "Text Block",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text_title",
+          "label": "Title"
+        },
+        {
+          "type": "richtext",
+          "id": "text_content",
+          "label": "Content"
+        },
+        {
+          "type": "range",
+          "id": "title_size",
+          "label": "Title Size",
+          "min": 16,
+          "max": 36,
+          "step": 2,
+          "default": 24,
+          "unit": "px"
+        },
+        {
+          "type": "range",
+          "id": "content_size",
+          "label": "Content Size",
+          "min": 12,
+          "max": 20,
+          "step": 1,
+          "default": 16,
+          "unit": "px"
+        },
+        {
+          "type": "color",
+          "id": "background_color",
+          "label": "Background Color",
+          "default": "#f8f8f8"
+        },
+        {
+          "type": "color",
+          "id": "text_color",
+          "label": "Text Color",
+          "default": "#333333"
+        },
+        {
+          "type": "text",
+          "id": "button_text",
+          "label": "Button Text"
+        },
+        {
+          "type": "url",
+          "id": "button_url",
+          "label": "Button URL"
+        },
+        {
+          "type": "color",
+          "id": "button_color",
+          "label": "Button Color",
+          "default": "#000000"
+        },
+        {
+          "type": "color",
+          "id": "button_text_color",
+          "label": "Button Text Color",
+          "default": "#ffffff"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Video Slideshow",
+      "blocks": [
+        { "type": "video" },
+        { "type": "video" },
+        { "type": "text" }
+      ]
+    }
+  ]
+}
+{% endschema %}

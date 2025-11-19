@@ -1,0 +1,190 @@
+{{ 'component-banner-slider.css' | asset_url | stylesheet_tag }}
+
+<script src="{{ 'banner-slider.js' | asset_url }}" defer="defer"></script>
+
+{%- if section.blocks.first.settings.image != blank -%}
+  <style>
+    @media screen and (max-width: 749px) {
+      #dCS_Banner-{{ section.id }}::before {
+        padding-bottom: {{ 1 | divided_by: section.blocks.first.settings.image.aspect_ratio | times: 100 }}%;
+        content: '';
+        display: block;
+      }
+
+      #dCS_BannerContainer-{{ section.id }} .dCS_banner-static {
+        visibility: hidden;
+        opacity: 0;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: -1;
+      }
+
+      #dCS_BannerContainer-{{ section.id }} .dCS_banner {
+        visibility: visible;
+        opacity: 1;
+        position: relative;
+        z-index: 1;
+      }
+    }
+
+    @media screen and (min-width: 750px) {
+      #dCS_Banner-{{ section.id }}::before {
+        padding-bottom: {{ 1 | divided_by: section.blocks.first.settings.image.aspect_ratio | times: 100 }}%;
+        content: '';
+        display: block;
+      }
+
+      #dCS_BannerContainer-{{ section.id }} .dCS_banner-static {
+        visibility: visible;
+        opacity: 1;
+        position: relative;
+        z-index: 1;
+      }
+
+      #dCS_BannerContainer-{{ section.id }} .dCS_banner {
+        visibility: hidden;
+        opacity: 0;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: -1;
+      }
+    }
+  </style>
+{%- endif -%}
+
+<div 
+  class="dCS_banner-container element-earth slide-earth-active" 
+  id="dCS_BannerContainer-{{ section.id }}" 
+  data-mobile-only="{{ section.settings.banner_image | asset_url }}"
+  data-auto-rotate="{{ section.settings.auto_rotate }}"
+  data-slide-speed="{{ section.settings.change_slides_speed }}"
+>
+  <div class="dCS_banner" id="dCS_Banner-{{ section.id }}" role="region" aria-roledescription="carousel">
+    <div class="dCS_slider-wrapper">
+      <div class="dCS_slider-inner">
+        <div class="dCS_slider">
+          {% for block in section.blocks %}
+            <div
+              class="dCS_banner__slide dCS_slider__slide"
+              id="dCS_Banner-{{ section.id }}-{{ forloop.index }}"
+              data-element-class="slide-{% if forloop.index == 1 %}earth{% elsif forloop.index == 2 %}fire{% elsif forloop.index == 3 %}water{% elsif forloop.index == 4 %}forest{% else %}earth{% endif %}-active"
+            >
+              <div class="dCS_banner__media">
+                {% if block.settings.image %}
+                  {{ block.settings.image | image_url: width: 3840 | image_tag }}
+                {% else %}
+                  <div class="dCS_banner__placeholder">No Image</div>
+                {% endif %}
+              </div>
+              
+              <!-- Purchase Now Button -->
+              {% if block.settings.product_url != blank %}
+                <div class="dCS_purchase-button-container">
+                  <a href="{{ block.settings.product_url }}" class="dCS_purchase-button">
+                    {{ block.settings.button_text | default: 'Purchase Now' }}
+                  </a>
+                </div>
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <div class="dCS_slider__controls">
+      <!-- Left arrow -->
+      <button type="button" class="dCS_slider-button dCS_slider-button--prev" name="previous" aria-label="Previous slide" aria-controls="dCS_Banner-{{ section.id }}">
+        <span class="svg-wrapper">
+          {{ 'icon-caret.svg' | inline_asset_content }}
+        </span>
+      </button>
+    
+      <!-- Dots -->
+      <div class="dCS_slider-dots">
+        {%- for block in section.blocks -%}
+          <button class="dCS_slider-dot{% if forloop.first %} active{% endif %}" aria-label="Go to slide {{ forloop.index }}" data-slide="{{ forloop.index }}"></button>
+        {%- endfor -%}
+      </div>
+    
+      <!-- Right arrow -->
+      <button type="button" class="dCS_slider-button dCS_slider-button--next" name="next" aria-label="Next slide" aria-controls="dCS_Banner-{{ section.id }}">
+        <span class="svg-wrapper">
+          {{ 'icon-caret.svg' | inline_asset_content }}
+        </span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Static Banner for Large Screens -->
+  <div class="dCS_banner-static">
+    <img src="{{ section.settings.banner_image | image_url: width: 2000 }}" alt="Banner Image">
+  </div>
+</div>
+
+
+{% schema %}
+{
+  "name": "Custom Banner",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "banner_image",
+      "label": "Banner Image"
+    },
+    {
+      "type": "checkbox",
+      "id": "auto_rotate",
+      "label": "Enable auto-rotate",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "change_slides_speed",
+      "label": "Slide Change Speed (seconds)",
+      "min": 3,
+      "max": 10,
+      "step": 1,
+      "default": 5
+    }
+  ],
+  "blocks": [
+    {
+      "type": "slide",
+      "name": "Slide",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Slide Image"
+        },
+        {
+          "type": "url",
+          "id": "product_url",
+          "label": "Product URL"
+        },
+        {
+          "type": "text",
+          "id": "button_text",
+          "label": "Button Text",
+          "default": "Purchase Now"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Custom Banner",
+      "blocks": [
+        {
+          "type": "slide"
+        },
+        {
+          "type": "slide"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
