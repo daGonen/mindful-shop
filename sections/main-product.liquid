@@ -7,6 +7,8 @@
   data-url="{{ product.url }}"
   {% if section.settings.image_zoom == 'hover' %}
     data-zoom-on-hover
+  {% elsif section.settings.image_zoom == 'fullscreen' %}
+    data-zoom-fullscreen
   {% endif %}
 >
   {{ 'section-main-product.css' | asset_url | stylesheet_tag }}
@@ -89,6 +91,11 @@
       line-height: 1.6;
     }
   {%- endstyle -%}
+
+  {% if section.settings.image_zoom == 'fullscreen' %}
+    {{ 'fullscreen-zoom.css' | asset_url | stylesheet_tag }}
+    <script src="{{ 'fullscreen-zoom.js' | asset_url }}" defer="defer"></script>
+  {% endif %}
 
   <script src="{{ 'product-info.js' | asset_url }}" defer="defer"></script>
   <script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
@@ -2947,6 +2954,10 @@
         {
           "value": "lightbox",
           "label": "t:sections.main-product.settings.image_zoom.options__1.label"
+        },
+        {
+          "value": "fullscreen",
+          "label": "Fullscreen overlay (transparent)"
         },
         {
           "value": "hover",

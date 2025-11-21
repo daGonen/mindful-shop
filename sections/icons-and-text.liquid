@@ -1,0 +1,386 @@
+{% comment %}
+  Custom Image & Text Section
+  
+  This section allows you to add custom images and text via blocks.
+  Can be used anywhere in the store (not limited to product pages).
+  All content is manually added through the theme editor.
+{% endcomment %}
+
+{{ 'image-and-text.css' | asset_url | stylesheet_tag }}
+
+{% assign gradientA = section.settings.gradient_color_a %}
+{% assign gradientB = section.settings.gradient_color_b %}
+{% assign use_gradient = section.settings.use_gradient_background %}
+
+<div class="metadata-images-section" id="{{ section.id }}">
+  <div class="section-container">
+    {% if section.settings.heading != blank %}
+      <h2 class="section-heading">{{ section.settings.heading }}</h2>
+    {% endif %}
+    
+    {% if section.blocks.size > 0 %}
+      <div class="metadata-images-wrapper-container">
+        <div class="metadata-images-scroll-track">
+          <div class="metadata-images-wrapper">
+            {% for block in section.blocks %}
+              {% if block.type == 'image_item' %}
+                <div class="metadata-item" {{ block.shopify_attributes }}>
+                  <div class="metadata-image-wrapper" 
+                       style="background-color: {{ block.settings.bg_color }}; width: {{ section.settings.image_size }}px; height: {{ section.settings.image_size }}px;">
+                    {% if block.settings.image != blank %}
+                      <img src="{{ block.settings.image | img_url: 'master' }}" 
+                           alt="{{ block.settings.image.alt | default: block.settings.caption | escape }}"
+                           loading="lazy"
+                           width="{{ block.settings.image.width | default: 100 }}"
+                           height="{{ block.settings.image.height | default: 100 }}"
+                           style="width: {{ section.settings.image_content_size }}%; height: {{ section.settings.image_content_size }}%; {% if block.settings.invert_image %}filter: invert(100%);{% endif %}">
+                    {% else %}
+                      <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #ccc; font-size: 12px;">
+                        No image
+                      </div>
+                    {% endif %}
+                  </div>
+                  
+                  {% if block.settings.caption != blank %}
+                    <div class="metadata-caption">
+                      {{ block.settings.caption }}
+                    </div>
+                  {% endif %}
+                </div>
+              {% endif %}
+            {% endfor %}
+          </div>
+          
+          {% comment %} Duplicate for seamless loop on mobile {% endcomment %}
+          <div class="metadata-images-wrapper" aria-hidden="true">
+            {% for block in section.blocks %}
+              {% if block.type == 'image_item' %}
+                <div class="metadata-item">
+                  <div class="metadata-image-wrapper" 
+                       style="background-color: {{ block.settings.bg_color }}; width: {{ section.settings.image_size }}px; height: {{ section.settings.image_size }}px;">
+                    {% if block.settings.image != blank %}
+                      <img src="{{ block.settings.image | img_url: 'master' }}" 
+                           alt=""
+                           loading="lazy"
+                           width="{{ block.settings.image.width | default: 100 }}"
+                           height="{{ block.settings.image.height | default: 100 }}"
+                           style="width: {{ section.settings.image_content_size }}%; height: {{ section.settings.image_content_size }}%; {% if block.settings.invert_image %}filter: invert(100%);{% endif %}">
+                    {% else %}
+                      <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #ccc; font-size: 12px;">
+                        No image
+                      </div>
+                    {% endif %}
+                  </div>
+                  
+                  {% if block.settings.caption != blank %}
+                    <div class="metadata-caption">
+                      {{ block.settings.caption }}
+                    </div>
+                  {% endif %}
+                </div>
+              {% endif %}
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+      {% comment %} Optional text blocks {% endcomment %}
+      {% assign has_text_blocks = false %}
+      {% for block in section.blocks %}
+        {% if block.type == 'text_block' %}
+          {% assign has_text_blocks = true %}
+          {% break %}
+        {% endif %}
+      {% endfor %}
+
+      {% if has_text_blocks %}
+        <div class="metadata-text-blocks">
+          {% for block in section.blocks %}
+            {% if block.type == 'text_block' %}
+              <div class="metadata-text-block" {{ block.shopify_attributes }}>
+                {% if block.settings.text != blank %}
+                  <div class="custom-text">
+                    {{ block.settings.text }}
+                  </div>
+                {% endif %}
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% else %}
+      <div style="text-align: center; padding: 40px; color: #999;">
+        <p>Add image blocks to get started</p>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+<style>
+  #{{ section.id }} {
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+    margin-top: {{ section.settings.margin_top }}px; 
+    margin-bottom: {{ section.settings.margin_bottom }}px;
+    {% if use_gradient %}
+      background: linear-gradient(to bottom, {{ gradientB }}, {{ gradientA }});
+    {% endif %}
+  }
+  
+  #{{ section.id }} .metadata-image-wrapper {
+    width: {{ section.settings.image_size }}px;
+    height: {{ section.settings.image_size }}px;
+  }
+  
+  #{{ section.id }} .metadata-image-wrapper img {
+    width: {{ section.settings.image_content_size }}%;
+    height: {{ section.settings.image_content_size }}%;
+  }
+  
+  @media screen and (max-width: 767px) {
+    #{{ section.id }} .section-container {
+      padding: 0;
+      max-width: 100%;
+    }
+    
+    #{{ section.id }} .metadata-images-wrapper-container {
+      overflow: hidden;
+      width: 100vw;
+      margin-left: calc(-50vw + 50%);
+    }
+    
+    #{{ section.id }} .metadata-images-scroll-track {
+      display: flex;
+      animation: scroll-left 30s linear infinite;
+      width: fit-content;
+    }
+    
+    #{{ section.id }} .metadata-images-wrapper {
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 20px;
+      padding-right: 20px;
+    }
+    
+    #{{ section.id }} .metadata-item {
+      flex-shrink: 0;
+      margin-bottom: 0;
+    }
+    
+    #{{ section.id }} .metadata-image-wrapper {
+      width: {{ section.settings.image_size_mobile }}px;
+      height: {{ section.settings.image_size_mobile }}px;
+    }
+    
+    @keyframes scroll-left {
+      0% {
+        transform: translateX(0);
+      }
+      100% {
+        transform: translateX(-50%);
+      }
+    }
+    
+    /* Pause animation on hover/touch */
+    #{{ section.id }} .metadata-images-scroll-track:hover {
+      animation-play-state: paused;
+    }
+  }
+  
+  @media screen and (min-width: 768px) {
+    #{{ section.id }} .metadata-images-scroll-track {
+      display: contents;
+    }
+    
+    #{{ section.id }} .metadata-images-wrapper:nth-child(2) {
+      display: none;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Custom Image & Text",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Section Heading",
+      "default": "Our Features"
+    },
+    {
+      "type": "header",
+      "content": "Image Settings"
+    },
+    {
+      "type": "range",
+      "id": "image_size",
+      "min": 50,
+      "max": 200,
+      "step": 5,
+      "unit": "px",
+      "label": "Image Container Size",
+      "default": 100,
+      "info": "Size of the circular image container"
+    },
+    {
+      "type": "range",
+      "id": "image_size_mobile",
+      "min": 50,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "label": "Mobile Image Container Size",
+      "default": 70,
+      "info": "Size of the circular image container on mobile"
+    },
+    {
+      "type": "range",
+      "id": "image_content_size",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Image Content Size",
+      "default": 75,
+      "info": "Size of the image inside the container"
+    },
+    {
+      "type": "header",
+      "content": "Background Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "use_gradient_background",
+      "label": "Use Gradient Background",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "gradient_color_a",
+      "label": "Gradient Color A (Bottom)",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "gradient_color_b",
+      "label": "Gradient Color B (Top)",
+      "default": "#f5f5f5"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding Top",
+      "default": 40,
+      "info": "Internal spacing (inside the gradient background)"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding Bottom",
+      "default": 40,
+      "info": "Internal spacing (inside the gradient background)"
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Margin Top",
+      "default": 0,
+      "info": "External spacing (outside the gradient background)"
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Margin Bottom",
+      "default": 0,
+      "info": "External spacing (outside the gradient background)"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "image_item",
+      "name": "Image Item",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image",
+          "info": "Upload or select an image from Content > Files"
+        },
+        {
+          "type": "text",
+          "id": "caption",
+          "label": "Caption",
+          "default": "Feature Name",
+          "info": "Text displayed below the image"
+        },
+        {
+          "type": "color",
+          "id": "bg_color",
+          "label": "Background Color",
+          "default": "#f5f5f5",
+          "info": "Background color of the circular container"
+        },
+        {
+          "type": "checkbox",
+          "id": "invert_image",
+          "label": "Invert Image Colors",
+          "default": false,
+          "info": "Apply color inversion filter to the image"
+        }
+      ]
+    },
+    {
+      "type": "text_block",
+      "name": "Text Block",
+      "settings": [
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Text Content",
+          "default": "<p>Add your custom text here. This text will appear below all the images.</p>",
+          "info": "Rich text editor supports formatting"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Custom Image & Text",
+      "blocks": [
+        {
+          "type": "image_item"
+        },
+        {
+          "type": "image_item"
+        },
+        {
+          "type": "image_item"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

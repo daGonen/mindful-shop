@@ -1,0 +1,80 @@
+/**
+ * Fullscreen Image Zoom Styles
+ */
+
+/* Fullscreen overlay container */
+.fullscreen-image-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px); /* Safari support */
+    z-index: 9999;
+    cursor: zoom-out;
+    padding: 0; /* Remove padding to allow full screen */
+    box-sizing: border-box;
+    overflow: hidden; /* Prevent any scrolling */
+  }
+  
+  .fullscreen-image-overlay.active {
+    display: block; /* Changed from flex to block */
+  }
+  
+  /* Fullscreen image - only ONE image, fills screen maintaining aspect ratio */
+  .fullscreen-image-overlay img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 100vw;
+    max-height: 100vh;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    display: block;
+    image-rendering: -webkit-optimize-contrast; /* Improve image quality */
+    image-rendering: crisp-edges;
+  }
+  
+  /* Cursor styling for zoomable images */
+  [data-zoom-fullscreen] .product__media-item img {
+    cursor: zoom-in;
+  }
+  
+  /* Prevent any scrolling when overlay is active */
+  body:has(.fullscreen-image-overlay.active) {
+    overflow: hidden !important;
+    position: fixed !important;
+    width: 100% !important;
+    height: 100% !important;
+  }
+  
+  /* Mobile optimizations */
+  @media screen and (max-width: 749px) {
+    .fullscreen-image-overlay {
+      padding: 10px;
+    }
+  }
+  
+  /* Animation for smooth appearance */
+  .fullscreen-image-overlay {
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+  }
+  
+  .fullscreen-image-overlay.active {
+    opacity: 1;
+  }
+  
+  /* .fullscreen-image-overlay img {
+    transform: scale(0.95);
+    transition: transform 0.2s ease-in-out;
+  }
+  
+  .fullscreen-image-overlay.active img {
+    transform: scale(1);
+  } */
