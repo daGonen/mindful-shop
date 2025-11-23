@@ -148,12 +148,25 @@
               {%- when '@app' -%}
                 {% render block %}
               {%- when 'text' -%}
-                <p
-                  class="product__text inline-richtext{% if block.settings.text_style == 'uppercase' %} caption-with-letter-spacing{% elsif block.settings.text_style == 'subtitle' %} subtitle{% endif %}"
-                  {{ block.shopify_attributes }}
-                >
-                  {{- block.settings.text -}}
-                </p>
+                {%- if block.settings.text_style == 'tags' -%}
+                  <div class="product__tags-wrapper" {{ block.shopify_attributes }}>
+                    {%- assign tag_text = block.settings.text | replace: ' and ', ',' | replace: ', and ', ',' -%}
+                    {%- assign tag_items = tag_text | split: ',' -%}
+                    {%- for tag in tag_items -%}
+                      {%- assign cleaned_tag = tag | strip -%}
+                      {%- if cleaned_tag != blank -%}
+                        <span class="product__tag">{{ cleaned_tag }}</span>
+                      {%- endif -%}
+                    {%- endfor -%}
+                  </div>
+                {%- else -%}
+                  <p
+                    class="product__text inline-richtext{% if block.settings.text_style == 'uppercase' %} caption-with-letter-spacing{% elsif block.settings.text_style == 'subtitle' %} subtitle{% endif %}"
+                    {{ block.shopify_attributes }}
+                  >
+                    {{- block.settings.text -}}
+                  </p>
+                {%- endif -%}
               {%- when 'custom_richtext' -%}
                 <div class="product__custom-richtext rte" {{ block.shopify_attributes }}>
                   {{ block.settings.richtext_content }}
@@ -1378,6 +1391,10 @@
             {
               "value": "uppercase",
               "label": "t:sections.main-product.blocks.text.settings.text_style.options__3.label"
+            },
+            {
+              "value": "tags",
+              "label": "Tags"
             }
           ],
           "default": "body",
