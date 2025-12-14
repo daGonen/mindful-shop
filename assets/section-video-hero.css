@@ -1,0 +1,198 @@
+.video-hero-section {
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  height: 100vh;
+}
+
+/* Account for header height when section is first */
+.shopify-section:first-child .video-hero-section {
+  height: calc(100vh - var(--header-height-total, 0px));
+  max-height: calc(100vh - var(--header-height-total, 0px));
+}
+
+.video-hero-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.video-hero {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  height: 100%;
+  width: auto;
+  min-width: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.video-hero-content {
+  position: absolute;
+  top: 40%;
+  left: 5%;
+  transform: translateY(-50%);
+  text-align: left;
+  z-index: 2;
+  
+  /* Fixed width with min/max constraints */
+  width: 850px;
+  max-width: 90%;
+  min-width: 350px;
+  
+  padding: 40px;
+}
+
+.video-hero-section .video-hero-content .video-hero-text {
+  font-family: var(--font-heading-family);
+  font-weight: bold;
+  color: white;
+  margin: 0 0 20px 0;
+  text-shadow: none;
+  line-height: 1.2;
+  white-space: normal; /* Changed from nowrap */
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.video-hero-section .video-hero-content .video-hero-richtext {
+  font-family: var(--font-body-family);
+  color: white;
+  font-size: clamp(1.3rem, 2vw + 1rem, 3.0rem) !important;
+  margin: 0 0 30px 0;
+  text-shadow: none;
+  line-height: 1.6;
+  white-space: normal; /* Changed from nowrap */
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.video-hero-section .video-hero-content .video-hero-richtext p {
+  margin: 0 0 15px 0;
+  color: white;
+}
+
+.video-hero-section .video-hero-content .video-hero-richtext p:last-child {
+  margin-bottom: 0;
+}
+
+/* Target h1-h6 inside richtext specifically */
+.video-hero-section .video-hero-content .video-hero-richtext h1,
+.video-hero-section .video-hero-content .video-hero-richtext h2,
+.video-hero-section .video-hero-content .video-hero-richtext h3,
+.video-hero-section .video-hero-content .video-hero-richtext h4,
+.video-hero-section .video-hero-content .video-hero-richtext h5,
+.video-hero-section .video-hero-content .video-hero-richtext h6 {
+  color: white;
+  margin: 0 0 15px 0;
+  text-shadow: none;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.video-hero-button {
+  display: inline-block;
+  padding: 15px 40px;
+  background-color: #ab2020;
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 16px;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.video-hero-button:hover {
+  background-color: rgb(253, 171, 49);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.4);
+}
+
+/* Tablet adjustments - keep box but adjust slightly */
+@media screen and (max-width: 1024px) and (min-width: 769px) {
+  .video-hero-content {
+    width: 600px;
+    min-width: 300px;
+    padding: 35px;
+  }
+  
+  .video-hero-section .video-hero-content .video-hero-text {
+    font-size: 36px !important;
+  }
+}
+
+/* Mobile layout - split screen */
+@media screen and (max-width: 768px) {
+  .video-hero-section {
+    height: auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .video-hero-wrapper {
+    height: 50vh;
+    flex-shrink: 0;
+  }
+
+  .video-hero {
+    position: relative;
+    transform: none;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .video-hero-content {
+    position: relative;
+    top: auto;
+    left: auto;
+    transform: none;
+    width: 100%;
+    min-width: unset;
+    max-width: unset;
+    height: 50vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px 20px;
+    background-color: #f3dfcf;
+    text-align: center;
+    
+    /* Remove box styling on mobile */
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border-radius: 0;
+    border: none;
+    box-shadow: none;
+  }
+
+  .video-hero-section .video-hero-content .video-hero-text {
+    white-space: normal;
+    font-size: 40px !important;
+    color: rgb(var(--color-foreground));
+  }
+
+  .video-hero-section .video-hero-content .video-hero-richtext {
+    white-space: normal;
+    color: #ab2020;
+  }
+
+  .video-hero-section .video-hero-content .video-hero-richtext p,
+  .video-hero-section .video-hero-content .video-hero-richtext h1,
+  .video-hero-section .video-hero-content .video-hero-richtext h2,
+  .video-hero-section .video-hero-content .video-hero-richtext h3,
+  .video-hero-section .video-hero-content .video-hero-richtext h4,
+  .video-hero-section .video-hero-content .video-hero-richtext h5,
+  .video-hero-section .video-hero-content .video-hero-richtext h6 {
+    color: rgb(var(--color-foreground));
+  }
+
+  .video-hero-text,
+  .video-hero-richtext {
+    margin-bottom: 20px;
+  }
+}
