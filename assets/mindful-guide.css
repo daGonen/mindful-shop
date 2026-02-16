@@ -58,7 +58,7 @@
   top: 0;
   left: 0;
   width: 0%;
-  height: 8px;
+  height: 4px;
   background: var(--mgw-accent, #6b8f71);
   z-index: 2147483647;
   transition: width 0.15s ease-out;
@@ -465,16 +465,23 @@
 /* --- Block: Split --- */
 .mgw__split {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--mgw-space-lg, 44px);
-  align-items: start;
+  grid-template-columns: var(--mgw-split-ratio, 1fr 1fr);
+  gap: var(--mgw-split-gap, var(--mgw-space-lg, 44px));
+  align-items: var(--mgw-split-valign, stretch);
   margin-bottom: var(--mgw-space-md, 28px);
 }
 
-@media (max-width: 700px) {
-  .mgw__split {
-    grid-template-columns: 1fr;
-  }
+.mgw__split__left,
+.mgw__split__right {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+/* When side has only an image, let it fill the column height */
+.mgw__split__left--image-only,
+.mgw__split__right--image-only {
+  justify-content: stretch;
 }
 
 .mgw__split__title {
@@ -482,6 +489,10 @@
   font-weight: 600;
   line-height: var(--mgw-lh-heading, 1.25);
   margin: 0 0 var(--mgw-space-sm, 16px);
+}
+
+.mgw__split__body {
+  flex: 1;
 }
 
 .mgw__split__body p {
@@ -495,13 +506,87 @@
 .mgw__split__image {
   border-radius: var(--mgw-radius, 12px);
   overflow: hidden;
+  flex: 1;
+  min-height: 200px;
+}
+
+/* When image has text above it, don't force fill */
+.mgw__split__image--with-text {
+  flex: 0 0 auto;
+  min-height: 0;
   margin-top: var(--mgw-space-sm, 16px);
 }
 
 .mgw__split__image img {
   display: block;
   width: 100%;
+  height: 100%;
+  object-fit: var(--mgw-split-left-fit, cover);
+  object-position: var(--mgw-split-left-pos, center);
+}
+
+.mgw__split__right .mgw__split__image img {
+  object-fit: var(--mgw-split-right-fit, cover);
+  object-position: var(--mgw-split-right-pos, center);
+}
+
+/* Image fit: auto — natural sizing, no crop */
+.mgw__split__image--auto {
+  min-height: 0;
+  flex: 0 0 auto;
+}
+
+.mgw__split__image--auto img {
   height: auto;
+}
+
+/* Gap variants */
+.mgw__split--gap-tight { --mgw-split-gap: var(--mgw-space-sm, 16px); }
+.mgw__split--gap-normal { --mgw-split-gap: var(--mgw-space-lg, 44px); }
+.mgw__split--gap-airy { --mgw-split-gap: var(--mgw-space-xl, 64px); }
+
+/* Vertical alignment variants */
+.mgw__split--valign-top { --mgw-split-valign: start; }
+.mgw__split--valign-center { --mgw-split-valign: center; }
+.mgw__split--valign-stretch { --mgw-split-valign: stretch; }
+
+/* Mobile: keep side-by-side, tighten gap, force image to fill text height */
+@media (max-width: 700px) {
+  .mgw__split {
+    gap: var(--mgw-space-sm, 16px);
+  }
+
+  .mgw__split__body {
+    font-size: 0.9em;
+  }
+
+  .mgw__split__title {
+    font-size: calc(var(--mgw-h3, 1.7rem) * 0.85);
+  }
+
+  /* Make the image-only side fill via grid stretch */
+  .mgw__split__left--image-only,
+  .mgw__split__right--image-only {
+    overflow: hidden;
+    height: 100%
+  }
+
+  .mgw__split__left--image-only .mgw__split__image,
+  .mgw__split__right--image-only .mgw__split__image {
+    min-height: 0;
+    height: 0;
+    flex: 1 1 0px;
+  }
+
+  .mgw__split__left--image-only .mgw__split__image img,
+  .mgw__split__right--image-only .mgw__split__image img {
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .mgw__split__image--auto img {
+    height: auto;
+  }
 }
 
 /* --- Block: Divider --- */
@@ -597,6 +682,7 @@
 }
 
 /* --- Block: Spacer --- */
+.mgw__spacer--xs, .mgw__spacer--sm, .mgw__spacer--md, .mgw__spacer--lg { display: block !important; }
 .mgw__spacer--xs { height: var(--mgw-space-xs, 12px); }
 .mgw__spacer--sm { height: var(--mgw-space-sm, 16px); }
 .mgw__spacer--md { height: var(--mgw-space-md, 28px); }
