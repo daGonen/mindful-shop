@@ -1,0 +1,108 @@
+{{ 'section-video-hero.css' | asset_url | stylesheet_tag }}
+
+<div class="video-hero-section">
+  <div class="video-hero-wrapper">
+    <video
+      id="hero-video-{{ section.id }}"
+      class="video-hero"
+      playsinline
+      muted
+      {% if section.settings.loop %}loop{% endif %}
+      preload="metadata"
+    >
+      {% if section.settings.video != blank %}
+        <source src="{{ section.settings.video }}" type="video/mp4">
+      {% endif %}
+    </video>
+    
+    {% if section.settings.overlay_text != blank or section.settings.button_label != blank %}
+      <div class="video-hero-content">
+        {% if section.settings.overlay_text != blank %}
+          <h2 class="video-hero-text" style="font-size: {{ section.settings.text_size }}px;">
+            {{ section.settings.overlay_text }}
+          </h2>
+        {% endif %}
+        
+        {% if section.settings.rich_text != blank %}
+          <div class="video-hero-richtext">
+            {{ section.settings.rich_text }}
+          </div>
+        {% endif %}
+        
+        {% if section.settings.button_label != blank and section.settings.button_link != blank %}
+          <a href="{{ section.settings.button_link }}" class="video-hero-button">
+            {{ section.settings.button_label }}
+          </a>
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+<script src="{{ 'section-video-hero.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "Video Hero",
+  "settings": [
+    {
+      "type": "url",
+      "id": "video",
+      "label": "Video URL",
+      "info": "Upload video to Content > Files, then paste the URL here"
+    },
+    {
+      "type": "checkbox",
+      "id": "loop",
+      "label": "Loop video",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Text Settings"
+    },
+    {
+      "type": "text",
+      "id": "overlay_text",
+      "label": "Headline",
+      "default": "Your Headline Here"
+    },
+    {
+      "type": "range",
+      "id": "text_size",
+      "min": 20,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "label": "Headline size",
+      "default": 48
+    },
+    {
+      "type": "richtext",
+      "id": "rich_text",
+      "label": "Description",
+      "default": "<p>Add your description here with full formatting options.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Button Settings"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Shop Now"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Video Hero"
+    }
+  ]
+}
+{% endschema %}
