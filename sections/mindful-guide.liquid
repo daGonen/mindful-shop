@@ -33,6 +33,11 @@
   assign hub_url = section.settings.hub_url
   assign help_email = section.settings.help_email
   assign show_hero = section.settings.show_hero
+  assign hero_banner = section.settings.hero_banner_mode
+  assign hero_overlay_opacity = section.settings.hero_overlay_opacity | default: 60
+  assign hero_text_style = section.settings.hero_text_style | default: 'knockout'
+  assign hero_banner_height = section.settings.hero_banner_height | default: 'auto'
+  assign hero_image_focus = section.settings.hero_image_focus | default: 'center'
 -%}
 
 {{ 'mindful-guide.css' | asset_url | stylesheet_tag }}
@@ -99,9 +104,6 @@
   {% if show_progress %}data-progress-bar="true" data-progress-id="{{ section_id }}-progress"{% endif %}
 >
 
-  {%- if show_progress -%}
-    <div class="mgw__progress" aria-hidden="true" id="{{ section_id }}-progress"></div>
-  {%- endif -%}
 
   {%- if bg_texture != blank -%}
     <div class="mgw__texture" aria-hidden="true" style="background-image: url('{{ bg_texture | image_url: width: 1920 }}');"></div>
@@ -139,41 +141,82 @@
     {%- endif -%}
 
     {%- if show_hero -%}
-      <header class="mgw__hero">
-        {%- if section.settings.eyebrow != blank -%}
-          <span class="mgw__eyebrow">{{ section.settings.eyebrow }}</span>
-        {%- endif -%}
-        {%- if section.settings.hero_title != blank -%}
-          <h1 class="mgw__hero-title">{{ section.settings.hero_title }}</h1>
-        {%- endif -%}
-        {%- if section.settings.hero_subtitle != blank -%}
-          <p class="mgw__hero-subtitle">{{ section.settings.hero_subtitle }}</p>
-        {%- endif -%}
-        {%- if section.settings.hero_meta != blank -%}
-          <p class="mgw__hero-meta">{{ section.settings.hero_meta }}</p>
-        {%- endif -%}
-        {%- if section.settings.hero_image != blank -%}
-          <div class="mgw__hero-image">
+      {%- if hero_banner and section.settings.hero_image != blank -%}
+        {%- comment -%} ── Banner mode: image as background, text overlaid ── {%- endcomment -%}
+        <header class="mgw__hero mgw__hero--banner mgw__hero--banner-{{ hero_banner_height }} mgw__hero--text-{{ hero_text_style }}" style="--mgw-hero-overlay-opacity: {{ hero_overlay_opacity | divided_by: 100.0 }}; --mgw-hero-focus: {{ hero_image_focus }};">
+          <div class="mgw__hero-banner-bg">
             <img
-              src="{{ section.settings.hero_image | image_url: width: 1200 }}"
+              src="{{ section.settings.hero_image | image_url: width: 1920 }}"
               alt="{{ section.settings.hero_image.alt | escape }}"
               width="{{ section.settings.hero_image.width }}"
               height="{{ section.settings.hero_image.height }}"
-              loading="lazy"
+              loading="eager"
             >
           </div>
-        {%- endif -%}
-        {%- if section.settings.primary_btn_label != blank or section.settings.secondary_btn_label != blank -%}
-          <div class="mgw__hero-actions">
-            {%- if section.settings.primary_btn_label != blank -%}
-              <a href="{{ section.settings.primary_btn_link }}" class="mgw__btn mgw__btn--primary">{{ section.settings.primary_btn_label }}</a>
+          <div class="mgw__hero-banner-overlay"></div>
+          <div class="mgw__hero-banner-content">
+            {%- if section.settings.eyebrow != blank -%}
+              <span class="mgw__eyebrow">{{ section.settings.eyebrow }}</span>
             {%- endif -%}
-            {%- if section.settings.secondary_btn_label != blank -%}
-              <a href="{{ section.settings.secondary_btn_link }}" class="mgw__btn mgw__btn--secondary">{{ section.settings.secondary_btn_label }}</a>
+            {%- if section.settings.hero_title != blank -%}
+              <h1 class="mgw__hero-title">{{ section.settings.hero_title }}</h1>
+            {%- endif -%}
+            {%- if section.settings.hero_subtitle != blank -%}
+              <p class="mgw__hero-subtitle">{{ section.settings.hero_subtitle }}</p>
+            {%- endif -%}
+            {%- if section.settings.hero_meta != blank -%}
+              <p class="mgw__hero-meta">{{ section.settings.hero_meta }}</p>
+            {%- endif -%}
+            {%- if section.settings.primary_btn_label != blank or section.settings.secondary_btn_label != blank -%}
+              <div class="mgw__hero-actions">
+                {%- if section.settings.primary_btn_label != blank -%}
+                  <a href="{{ section.settings.primary_btn_link }}" class="mgw__btn mgw__btn--primary">{{ section.settings.primary_btn_label }}</a>
+                {%- endif -%}
+                {%- if section.settings.secondary_btn_label != blank -%}
+                  <a href="{{ section.settings.secondary_btn_link }}" class="mgw__btn mgw__btn--secondary">{{ section.settings.secondary_btn_label }}</a>
+                {%- endif -%}
+              </div>
             {%- endif -%}
           </div>
-        {%- endif -%}
-      </header>
+        </header>
+      {%- else -%}
+        {%- comment -%} ── Standard mode: image and text separate ── {%- endcomment -%}
+        <header class="mgw__hero">
+          {%- if section.settings.eyebrow != blank -%}
+            <span class="mgw__eyebrow">{{ section.settings.eyebrow }}</span>
+          {%- endif -%}
+          {%- if section.settings.hero_title != blank -%}
+            <h1 class="mgw__hero-title">{{ section.settings.hero_title }}</h1>
+          {%- endif -%}
+          {%- if section.settings.hero_subtitle != blank -%}
+            <p class="mgw__hero-subtitle">{{ section.settings.hero_subtitle }}</p>
+          {%- endif -%}
+          {%- if section.settings.hero_meta != blank -%}
+            <p class="mgw__hero-meta">{{ section.settings.hero_meta }}</p>
+          {%- endif -%}
+          {%- if section.settings.hero_image != blank -%}
+            <div class="mgw__hero-image">
+              <img
+                src="{{ section.settings.hero_image | image_url: width: 1200 }}"
+                alt="{{ section.settings.hero_image.alt | escape }}"
+                width="{{ section.settings.hero_image.width }}"
+                height="{{ section.settings.hero_image.height }}"
+                loading="lazy"
+              >
+            </div>
+          {%- endif -%}
+          {%- if section.settings.primary_btn_label != blank or section.settings.secondary_btn_label != blank -%}
+            <div class="mgw__hero-actions">
+              {%- if section.settings.primary_btn_label != blank -%}
+                <a href="{{ section.settings.primary_btn_link }}" class="mgw__btn mgw__btn--primary">{{ section.settings.primary_btn_label }}</a>
+              {%- endif -%}
+              {%- if section.settings.secondary_btn_label != blank -%}
+                <a href="{{ section.settings.secondary_btn_link }}" class="mgw__btn mgw__btn--secondary">{{ section.settings.secondary_btn_label }}</a>
+              {%- endif -%}
+            </div>
+          {%- endif -%}
+        </header>
+      {%- endif -%}
     {%- endif -%}
 
     <div class="mgw__blocks">
@@ -247,18 +290,50 @@
             {%- if block.settings.show_divider -%}<div class="mgw__block-divider" aria-hidden="true"><svg class="mgw__block-divider-svg" viewBox="0 0 577 77" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet"><g transform="translate(0,77) scale(0.1,-0.1)" fill="currentColor" stroke="none"><path d="M4888 759 c-60 -9 -144 -55 -174 -94 -76 -100 -79 -248 -6 -318 32-30 101 -57 146 -57 73 1 167 73 165 128 0 25 -1 26 -12 7 -55 -90 -156 -116 -239 -61 -87 57 -68 222 33 296 75 54 204 64 287 21 52 -26 99 -82 108 -126 24 -128 -90 -316 -234 -387 -59 -29 -76 -33 -147 -32 -131 1 -267 65 -429 201 -43 36 -80 62 -83 59 -20 -20 169 -193 270 -246 129 -70 300 -108 433 -96 78 6 168 25 160 33 -3 3 -63 5 -133 4 l-128 -1 53 29 c104 58 171 133 234 259 35 70 42 92 42 145 1 162 -153 267 -346 236z"/><path d="M2573 600 c-29 -10 -79 -57 -69 -67 2 -3 17 5 33 17 62 46 167 22 331 -74 56 -33 83 -55 92 -76 12 -29 9 -104 -5 -149 -6 -18 -5 -23 6 -19 25 8 50 70 47 116 -3 34 0 41 12 36 109 -44 166 -52 280 -39 64 7 66 6 119 -29 57 -39 67 -40 56 -6 -8 25 -61 60 -91 60 -33 0 -35 10 -9 45 14 17 28 47 31 66 l6 34 -30 -47 c-82 -126 -208 -118 -448 27 -150 92 -280 129 -361 105z"/><path d="M930 559 c-133 -23 -268 -124 -324 -242 -45 -96 -32 -187 28 -203 36 -9 103 14 125 43 26 32 26 38 1 63 -21 21 -80 28 -80 10 0 -5 7 -10 16 -10 27 0 54 -20 48 -35 -7 -18 -75 -38 -98 -29 -43 16 4 170 66 217 93 72 225 107 413 112 159 5 236 -8 349 -57 67 -29 192 -51 171 -31 -15 15 -320 128 -395 147 -82 20 -248 28 -320 15z m96 -27 c-2 -4 -19 -9 -38 -10 -41 -3 -133 -29 -170 -48 -41 -21 -34 -8 10 21 21 14 59 29 83 34 57 11 121 13 115 3z"/><path d="M5316 524 c-18 -18 -6 -54 19 -54 7 0 15 -10 17 -21 5 -35 33 -47 58 -24 29 26 23 59 -12 63 -19 2 -28 9 -28 22 0 10 -7 21 -16 24 -21 8 -20 8 -38 -10z"/><path d="M144 510 c-142 -46 -189 -187 -95 -281 111 -112 282 -20 241 130 -18 68 -67 88 -127 51 -35 -21 -46 -48 -15 -35 9 5 31 10 49 13 39 5 58 -24 50 -76 -12 -68 -74 -99 -139 -68 -44 21 -68 63 -68 119 0 97 115 152 245 116 51 -14 125 -89 144 -147 21 -64 35 -65 28 -3 -19 157 -152 234 -313 181z"/><path d="M2587 523 c-3 -5 -8 -22 -11 -40 -6 -25 -3 -36 13 -52 12 -12 29 -21 40 -21 42 0 59 64 26 100 -18 20 -60 27 -68 13z"/><path d="M4464 519 c-12 -4 -29 -18 -38 -31 -36 -51 -7 -98 62 -98 32 0 45 6 61 26 26 33 26 55 4 83 -21 23 -58 32 -89 20z m81 -49 c0 -16 -63 -62 -79 -57 -24 8 -17 46 11 61 33 19 68 17 68 -4z"/><path d="M3212 508 c-26 -26 -6 -68 33 -68 25 0 48 35 40 61 -7 22 -54 26 -73 7z m45 -34 c-9 -9 -28 6 -21 18 4 6 10 6 17 -1 6 -6 8 -13 4 -17z"/><path d="M1932 429 c-57 -28 -122 -91 -122 -118 0 -17 6 -14 57 26 61 46 144 84 197 90 54 7 95 -12 176 -77 80 -65 136 -91 209 -97 47 -4 61 -1 90 19 49 33 51 49 4 32 -21 -7 -46 -13 -56 -14 -34 0 -129 40 -200 85 -138 88 -252 106 -355 54z"/><path d="M1115 417 c-21 -16 -14 -64 12 -74 42 -16 66 47 27 73 -17 12 -23 12 -39 1z"/><path d="M2487 423 c-10 -9 -8 -35 2 -52 13 -21 51 -4 51 24 0 27 -35 46 -53 28z"/><path d="M5450 399 c-71 -22 -126 -82 -149 -164 -16 -60 -1 -62 31 -4 16 29 38 64 50 76 103 110 373 27 355 -109 -10 -75 -83 -148 -147 -148 -84 0 -152 120 -105 187 19 27 64 43 93 32 35 -13 38 -37 8 -60 -49 -39 -14 -99 38 -66 21 14 26 25 26 58 0 82 -89 126 -170 84 -101 -52 -66 -229 53 -274 98 -37 215 45 233 164 16 108 -93 215 -234 229 -26 3 -63 0 -82 -5z"/><path d="M3938 371 c-32 -11 -79 -33 -105 -49 -119 -76 -209 -102 -268 -78 -43 18 -55 15 -34 -10 21 -25 73 -44 121 -44 53 0 143 41 214 97 70 56 106 73 156 73 51 0 141 -40 211 -94 52 -40 57 -42 57 -23 0 26 -70 95 -122 121 -63 32 -145 34 -230 7z"/><path d="M2055 330 c-56 -21 -77 -97 -34 -121 32 -17 88 -13 110 7 53 48 -8 139 -76 114z m70 -54 c0 -10 -16 -27 -38 -40 -31 -17 -39 -19 -46 -7 -13 20 -3 39 28 56 33 18 56 15 56 -9z"/></g></svg></div>{%- endif -%}
 
           {%- when 'split' -%}
-            <div class="mgw__block mgw__split" {{ block.shopify_attributes }} {{ motion_attr }}>
-              <div class="mgw__split__left">
+            {%- liquid
+              assign split_left = block.settings.split_ratio | default: 50
+              assign split_right = 100 | minus: split_left
+              assign left_has_text = false
+              assign right_has_text = false
+              if block.settings.left_title != blank or block.settings.left_body != blank
+                assign left_has_text = true
+              endif
+              if block.settings.right_title != blank or block.settings.right_body != blank
+                assign right_has_text = true
+              endif
+              assign left_image_class = 'mgw__split__image'
+              assign right_image_class = 'mgw__split__image'
+              if left_has_text
+                assign left_image_class = left_image_class | append: ' mgw__split__image--with-text'
+              endif
+              if right_has_text
+                assign right_image_class = right_image_class | append: ' mgw__split__image--with-text'
+              endif
+              if block.settings.left_image_fit == 'auto'
+                assign left_image_class = left_image_class | append: ' mgw__split__image--auto'
+              endif
+              if block.settings.right_image_fit == 'auto'
+                assign right_image_class = right_image_class | append: ' mgw__split__image--auto'
+              endif
+            -%}
+            <div
+              class="mgw__block mgw__split mgw__split--gap-{{ block.settings.gap_size | default: 'normal' }} mgw__split--valign-{{ block.settings.vertical_align | default: 'stretch' }}"
+              style="--mgw-split-ratio: {{ split_left }}fr {{ split_right }}fr; --mgw-split-left-fit: {{ block.settings.left_image_fit | default: 'cover' }}; --mgw-split-left-pos: {{ block.settings.left_image_position | default: 'center' }}; --mgw-split-right-fit: {{ block.settings.right_image_fit | default: 'cover' }}; --mgw-split-right-pos: {{ block.settings.right_image_position | default: 'center' }};"
+              {{ block.shopify_attributes }}
+              {{ motion_attr }}
+            >
+              <div class="mgw__split__left{% unless left_has_text %}{% if block.settings.left_image != blank %} mgw__split__left--image-only{% endif %}{% endunless %}">
                 {%- if block.settings.left_title != blank -%}<h3 class="mgw__split__title">{{ block.settings.left_title }}</h3>{%- endif -%}
                 {%- if block.settings.left_body != blank -%}<div class="mgw__split__body">{{ block.settings.left_body }}</div>{%- endif -%}
                 {%- if block.settings.left_image != blank -%}
-                  <div class="mgw__split__image"><img src="{{ block.settings.left_image | image_url: width: 600 }}" alt="{{ block.settings.left_image.alt | escape }}" width="{{ block.settings.left_image.width }}" height="{{ block.settings.left_image.height }}" loading="lazy"></div>
+                  <div class="{{ left_image_class }}"><img src="{{ block.settings.left_image | image_url: width: 900 }}" alt="{{ block.settings.left_image.alt | escape }}" width="{{ block.settings.left_image.width }}" height="{{ block.settings.left_image.height }}" loading="lazy"></div>
                 {%- endif -%}
               </div>
-              <div class="mgw__split__right">
+              <div class="mgw__split__right{% unless right_has_text %}{% if block.settings.right_image != blank %} mgw__split__right--image-only{% endif %}{% endunless %}">
+                {%- if block.settings.right_title != blank -%}<h3 class="mgw__split__title">{{ block.settings.right_title }}</h3>{%- endif -%}
                 {%- if block.settings.right_body != blank -%}<div class="mgw__split__body">{{ block.settings.right_body }}</div>{%- endif -%}
                 {%- if block.settings.right_image != blank -%}
-                  <div class="mgw__split__image"><img src="{{ block.settings.right_image | image_url: width: 600 }}" alt="{{ block.settings.right_image.alt | escape }}" width="{{ block.settings.right_image.width }}" height="{{ block.settings.right_image.height }}" loading="lazy"></div>
+                  <div class="{{ right_image_class }}"><img src="{{ block.settings.right_image | image_url: width: 900 }}" alt="{{ block.settings.right_image.alt | escape }}" width="{{ block.settings.right_image.width }}" height="{{ block.settings.right_image.height }}" loading="lazy"></div>
                 {%- endif -%}
               </div>
             </div>
@@ -315,6 +390,24 @@
     { "type": "textarea", "id": "hero_subtitle", "label": "Subtitle" },
     { "type": "text", "id": "hero_meta", "label": "Meta line (e.g. Days 8–14)" },
     { "type": "image_picker", "id": "hero_image", "label": "Hero image" },
+    { "type": "checkbox", "id": "hero_banner_mode", "label": "Banner mode (image + text combined)", "default": false, "info": "Turns the hero into a banner with text overlaid on the image" },
+    { "type": "select", "id": "hero_text_style", "label": "Banner text style", "options": [
+        { "value": "knockout", "label": "Knockout (text reveals image)" },
+        { "value": "light", "label": "Light text on dark overlay" },
+        { "value": "dark", "label": "Dark text on light overlay" }
+      ], "default": "knockout", "info": "Knockout: text punches through to reveal the image beneath" },
+    { "type": "range", "id": "hero_overlay_opacity", "label": "Banner overlay opacity", "min": 0, "max": 95, "step": 5, "default": 60, "unit": "%" },
+    { "type": "select", "id": "hero_banner_height", "label": "Banner height", "options": [
+        { "value": "auto", "label": "Auto (fit content)" },
+        { "value": "small", "label": "Small (300px)" },
+        { "value": "medium", "label": "Medium (420px)" },
+        { "value": "large", "label": "Large (560px)" }
+      ], "default": "auto" },
+    { "type": "select", "id": "hero_image_focus", "label": "Image focus point", "options": [
+        { "value": "center", "label": "Center" },
+        { "value": "top", "label": "Top" },
+        { "value": "bottom", "label": "Bottom" }
+      ], "default": "center" },
     { "type": "text", "id": "primary_btn_label", "label": "Primary button label" },
     { "type": "url", "id": "primary_btn_link", "label": "Primary button link" },
     { "type": "text", "id": "secondary_btn_label", "label": "Secondary button label" },
@@ -476,11 +569,51 @@
       "type": "split",
       "name": "Split",
       "settings": [
+        { "type": "header", "content": "Layout" },
+        { "type": "range", "id": "split_ratio", "label": "Left side width %", "min": 20, "max": 80, "step": 5, "default": 50, "unit": "%" },
+        { "type": "select", "id": "vertical_align", "label": "Vertical alignment", "options": [
+            { "value": "stretch", "label": "Stretch (match heights)" },
+            { "value": "top", "label": "Top" },
+            { "value": "center", "label": "Center" }
+          ], "default": "stretch" },
+        { "type": "select", "id": "gap_size", "label": "Gap between sides", "options": [
+            { "value": "tight", "label": "Tight" },
+            { "value": "normal", "label": "Normal" },
+            { "value": "airy", "label": "Airy" }
+          ], "default": "normal" },
+        { "type": "header", "content": "Left side" },
         { "type": "text", "id": "left_title", "label": "Left title" },
         { "type": "richtext", "id": "left_body", "label": "Left body" },
         { "type": "image_picker", "id": "left_image", "label": "Left image" },
-        { "type": "richtext", "id": "right_body", "label": "Right body (text or list)" },
+        { "type": "select", "id": "left_image_fit", "label": "Left image fit", "options": [
+            { "value": "cover", "label": "Cover (crop to fill)" },
+            { "value": "contain", "label": "Contain (show all)" },
+            { "value": "auto", "label": "Auto (natural size)" }
+          ], "default": "cover" },
+        { "type": "select", "id": "left_image_position", "label": "Left image focus", "options": [
+            { "value": "center", "label": "Center" },
+            { "value": "top", "label": "Top" },
+            { "value": "bottom", "label": "Bottom" },
+            { "value": "left", "label": "Left" },
+            { "value": "right", "label": "Right" }
+          ], "default": "center" },
+        { "type": "header", "content": "Right side" },
+        { "type": "text", "id": "right_title", "label": "Right title" },
+        { "type": "richtext", "id": "right_body", "label": "Right body" },
         { "type": "image_picker", "id": "right_image", "label": "Right image" },
+        { "type": "select", "id": "right_image_fit", "label": "Right image fit", "options": [
+            { "value": "cover", "label": "Cover (crop to fill)" },
+            { "value": "contain", "label": "Contain (show all)" },
+            { "value": "auto", "label": "Auto (natural size)" }
+          ], "default": "cover" },
+        { "type": "select", "id": "right_image_position", "label": "Right image focus", "options": [
+            { "value": "center", "label": "Center" },
+            { "value": "top", "label": "Top" },
+            { "value": "bottom", "label": "Bottom" },
+            { "value": "left", "label": "Left" },
+            { "value": "right", "label": "Right" }
+          ], "default": "center" },
+        { "type": "header", "content": "Options" },
         { "type": "checkbox", "id": "show_divider", "label": "Show divider after block", "default": false }
       ]
     },

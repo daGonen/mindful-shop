@@ -162,6 +162,206 @@
   margin-top: var(--mgw-space-md, 28px);
 }
 
+/* --- Hero: Banner Mode --- */
+.mgw__hero--banner {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--mgw-radius, 12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Banner height variants */
+.mgw__hero--banner-auto {
+  min-height: 280px;
+}
+
+.mgw__hero--banner-small {
+  min-height: 300px;
+}
+
+.mgw__hero--banner-medium {
+  min-height: 420px;
+}
+
+.mgw__hero--banner-large {
+  min-height: 560px;
+}
+
+/* Background image layer */
+.mgw__hero-banner-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.mgw__hero-banner-bg img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: var(--mgw-hero-focus, center);
+}
+
+/* Overlay layer — sits between image and content */
+.mgw__hero-banner-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  display: block !important;
+}
+
+/* Content layer */
+.mgw__hero-banner-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: var(--mgw-space-xl, 64px) var(--mgw-space-lg, 44px);
+  width: 100%;
+  max-width: var(--mgw-max-width, 860px);
+  margin: 0 auto;
+}
+
+/* ── Style: Knockout ──
+   Content layer gets bg-color background + multiply blend.
+   Black text "burns through" to reveal the image beneath.
+   Overlay adds an extra veil controlled by opacity slider. */
+.mgw__hero--text-knockout {
+  isolation: isolate;
+}
+
+.mgw__hero--text-knockout .mgw__hero-banner-overlay {
+  background: var(--mgw-bg, #ffffff);
+  opacity: var(--mgw-hero-overlay-opacity, 0.6);
+}
+
+.mgw__hero--text-knockout .mgw__hero-banner-content {
+  background: var(--mgw-bg, #ffffff);
+  mix-blend-mode: multiply;
+  padding: var(--mgw-space-xl, 64px) var(--mgw-space-lg, 44px);
+}
+
+.mgw__hero--text-knockout .mgw__hero-title {
+  color: rgba(0, 0, 0, 0.85);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.mgw__hero--text-knockout .mgw__eyebrow {
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.mgw__hero--text-knockout .mgw__hero-subtitle {
+  color: rgba(0, 0, 0, 0.45);
+  max-width: 560px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.mgw__hero--text-knockout .mgw__hero-meta {
+  color: rgba(0, 0, 0, 0.35);
+}
+
+/* Buttons need to escape the blend mode */
+.mgw__hero--text-knockout .mgw__hero-actions {
+  position: relative;
+  z-index: 3;
+  mix-blend-mode: normal;
+  isolation: isolate;
+}
+
+.mgw__hero--text-knockout .mgw__btn--primary {
+  background: rgba(0, 0, 0, 0.85);
+  color: #fff;
+  mix-blend-mode: normal;
+}
+
+.mgw__hero--text-knockout .mgw__btn--secondary {
+  border-color: rgba(0, 0, 0, 0.6);
+  color: rgba(0, 0, 0, 0.7);
+}
+
+/* ── Style: Light text on dark overlay ── */
+.mgw__hero--text-light .mgw__hero-banner-overlay {
+  background: #000;
+  opacity: var(--mgw-hero-overlay-opacity, 0.6);
+}
+
+.mgw__hero--text-light .mgw__hero-title {
+  color: #ffffff;
+}
+
+.mgw__hero--text-light .mgw__eyebrow {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.mgw__hero--text-light .mgw__hero-subtitle {
+  color: rgba(255, 255, 255, 0.75);
+  max-width: 560px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.mgw__hero--text-light .mgw__hero-meta {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.mgw__hero--text-light .mgw__btn--primary {
+  background: #ffffff;
+  color: #2c2c2c;
+}
+
+.mgw__hero--text-light .mgw__btn--secondary {
+  border-color: rgba(255, 255, 255, 0.6);
+  color: #ffffff;
+}
+
+.mgw__hero--text-light .mgw__btn--secondary:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* ── Style: Dark text on light overlay ── */
+.mgw__hero--text-dark .mgw__hero-banner-overlay {
+  background: #fff;
+  opacity: var(--mgw-hero-overlay-opacity, 0.6);
+}
+
+.mgw__hero--text-dark .mgw__hero-title {
+  color: var(--mgw-text, #2c2c2c);
+}
+
+.mgw__hero--text-dark .mgw__eyebrow {
+  color: var(--mgw-accent, #6b8f71);
+}
+
+.mgw__hero--text-dark .mgw__hero-subtitle {
+  color: var(--mgw-text-muted, #6b6b6b);
+  max-width: 560px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.mgw__hero--text-dark .mgw__hero-meta {
+  color: var(--mgw-text-muted, #6b6b6b);
+}
+
+/* ── Banner mobile adjustments ── */
+@media (max-width: 700px) {
+  .mgw__hero--banner-small { min-height: 220px; }
+  .mgw__hero--banner-medium { min-height: 300px; }
+  .mgw__hero--banner-large { min-height: 400px; }
+
+  .mgw__hero-banner-content {
+    padding: var(--mgw-space-lg, 44px) var(--mgw-space-md, 28px);
+  }
+
+  .mgw__hero--banner .mgw__hero-title {
+    font-size: calc(var(--mgw-h1, 3rem) * 0.75);
+  }
+}
+
 /* --- Buttons --- */
 .mgw__btn {
   display: inline-flex;
